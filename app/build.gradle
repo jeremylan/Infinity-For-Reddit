@@ -22,6 +22,8 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.debug
+            Properties secretProperties = getSecretProperties()
+            buildConfigField "String", "REDDIT_API_KEY", secretProperties["REDDIT_API_KEY"]
         }
         minifiedRelease {
             initWith buildTypes.release
@@ -29,10 +31,14 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            Properties secretProperties = getSecretProperties()
+            buildConfigField "String", "REDDIT_API_KEY", secretProperties["REDDIT_API_KEY"]
         }
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix ' (DEBUG)'
+            Properties secretProperties = getSecretProperties()
+            buildConfigField "String", "REDDIT_API_KEY", secretProperties["REDDIT_API_KEY"]
         }
     }
     compileOptions {
@@ -195,4 +201,10 @@ dependencies {
 /**** Builds and flavors ****/
     // debugImplementation because LeakCanary should only run in debug builds.
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:x.y'
+}
+
+def getSecretProperties() {
+    Properties props = new Properties()
+    props.load(new FileInputStream(file('../secrets.properties')))
+    return props
 }
