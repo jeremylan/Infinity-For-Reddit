@@ -65,6 +65,7 @@ android {
     kotlinOptions {
         jvmTarget = '11'
     }
+    namespace 'ml.docilealligator.infinityforreddit'
 }
 
 dependencies {
