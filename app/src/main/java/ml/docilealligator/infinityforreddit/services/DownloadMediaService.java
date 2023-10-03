@@ -429,7 +429,7 @@ public class DownloadMediaService extends Service {
                 intent.setAction(android.content.Intent.ACTION_VIEW);
                 intent.setDataAndType(mediaUri, mimeType);
                 intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.getActivity(DownloadMediaService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE) : PendingIntent.getActivity(DownloadMediaService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent pendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.getActivity(DownloadMediaService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE) : PendingIntent.getActivity(DownloadMediaService.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 builder.setContentIntent(pendingIntent);
 
                 Intent shareIntent = new Intent();
@@ -438,14 +438,14 @@ public class DownloadMediaService extends Service {
                 shareIntent.setType(mimeType);
                 shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 Intent intentAction = Intent.createChooser(shareIntent, getString(R.string.share));
-                PendingIntent shareActionPendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.getActivity(this, 1, intentAction, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE) : PendingIntent.getActivity(this, 1, intentAction, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent shareActionPendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.getActivity(this, 1, intentAction, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE) : PendingIntent.getActivity(this, 1, intentAction, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
                 builder.addAction(new NotificationCompat.Action(R.drawable.ic_notification, getString(R.string.share), shareActionPendingIntent));
 
                 Intent deleteIntent = new Intent(this, DownloadedMediaDeleteActionBroadcastReceiver.class);
                 deleteIntent.setData(mediaUri);
                 deleteIntent.putExtra(DownloadedMediaDeleteActionBroadcastReceiver.EXTRA_NOTIFICATION_ID, getNotificationId(mediaType, randomNotificationIdOffset));
-                PendingIntent deleteActionPendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.getBroadcast(this, 2, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE) : PendingIntent.getBroadcast(this, 2, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent deleteActionPendingIntent = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.getBroadcast(this, 2, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE) : PendingIntent.getBroadcast(this, 2, deleteIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 builder.addAction(new NotificationCompat.Action(R.drawable.ic_notification, getString(R.string.delete), deleteActionPendingIntent));
             }
             notificationManager.notify(getNotificationId(mediaType, randomNotificationIdOffset), builder.build());
