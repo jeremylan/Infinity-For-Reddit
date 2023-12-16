@@ -8,8 +8,8 @@ android {
         applicationId "ml.docilealligator.infinityforreddit"
         minSdk 21
         targetSdk 33
-        versionCode 135
-        versionName "6.3.0-beta2"
+        versionCode 150
+        versionName "6.5.6"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -157,7 +157,7 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     implementation 'jp.wasabeef:glide-transformations:4.3.0'
     implementation 'com.github.santalu:aspect-ratio-imageview:1.0.9'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.23'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
     def bivVersion = "1.8.1"
     implementation "com.github.piasy:BigImageViewer:$bivVersion"
     implementation "com.github.piasy:GlideImageLoader:$bivVersion"
@@ -171,6 +171,7 @@ dependencies {
     implementation "io.noties.markwon:recycler-table:$markwonVersion"
     implementation "io.noties.markwon:simple-ext:$markwonVersion"
     implementation "io.noties.markwon:inline-parser:$markwonVersion"
+    implementation "io.noties.markwon:image-glide:$markwonVersion"
     implementation 'com.atlassian.commonmark:commonmark-ext-gfm-tables:0.14.0'
     implementation 'me.saket:better-link-movement-method:2.2.0'
 
