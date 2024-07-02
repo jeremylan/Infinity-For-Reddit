@@ -72,7 +72,6 @@
     <string name="action_share">"共有"</string>
     <string name="action_preview">"プレビュー"</string>
     <string name="action_report">"通報"</string>
-    <string name="action_see_removed">"削除済みを見る"</string>
     <string name="action_set_wallpaper">"壁紙に設定"</string>
     <string name="action_send_private_message">"個人メッセージを送信"</string>
     <string name="parse_json_response_error">"JSONの解析中にエラーが発生しました"</string>
@@ -298,11 +297,6 @@
     <string name="are_you_sure">"よろしいですか？"</string>
     <string name="edit">"編集"</string>
     <string name="delete">"削除"</string>
-    <string name="see_removed_comment">"削除済みのコメントを表示"</string>
-    <string name="fetching_removed_comment">"削除済みのコメントを取得中です"</string>
-    <string name="show_removed_comment_failed">"削除済みのコメントを取得できませんでした"</string>
-    <string name="fetching_removed_post">"削除済みの投稿を取得中です"</string>
-    <string name="show_removed_post_failed">"削除済みの投稿を取得できませんでした"</string>
     <string name="cancel">"キャンセル"</string>
     <string name="ok">"OK"</string>
 
@@ -383,7 +377,6 @@
     <string name="settings_mute_nsfw_video_title">"NSFWの動画をミュート再生"</string>
 
     <!-- Fuzzy -->
-    <string name="settings_automatically_try_redgifs_title">"Gfycatの動画が削除されていた場合、自動的にRedgifsでリトライ"</string>
     <string name="settings_video_player_ignore_nav_bar_title">"動画プレーヤーでナビゲーションバーを無視"</string>
     <string name="settings_video_player_ignore_nav_bar_summary">"動画コントローラーが余分な余白を使用することを防止します"</string>
     <string name="settings_confirm_to_exit">"アプリの終了確認を表示"</string>
@@ -836,7 +829,6 @@ https://play.google.com/store/apps/details?id=ml.docilealligator.infinityforredd
     <string name="notifications">"通知"</string>
     <string name="messages">"メッセージ"</string>
     <string name="message">"メッセージ"</string>
-    <string name="fetch_gfycat_video_failed">"Gfycat動画を取得できませんでした"</string>
     <string name="fetch_redgifs_video_failed">"Redgifs動画を取得できませんでした"</string>
     <string name="fetching_video_info_please_wait">"動画の情報を取得中です。少々お待ちください。"</string>
     <string name="error_fetching_imgur_media">"画像をロードできませんでした"</string>
@@ -1042,8 +1034,6 @@ https://play.google.com/store/apps/details?id=ml.docilealligator.infinityforredd
     <string name="settings_hide_the_number_of_comments">"コメント数を非表示にする"</string>
     <string name="post_layout_gallery">"ギャラリーレイアウト"</string>
     <string name="post_layout_card_2">"カードレイアウト2"</string>
-    <string name="have_trouble_login_title">"ログインに問題が発生"</string>
-    <string name="have_trouble_login_message">"別のログイン方法を試しますか？"</string>
     <string name="vote">"投票"</string>
     <string name="action_share_link">"リンクを共有"</string>
     <string name="action_copy_link">"リンクをコピー"</string>
@@ -1112,7 +1102,6 @@ https://play.google.com/store/apps/details?id=ml.docilealligator.infinityforredd
 それでも有効にしますか？"</string>
     <string name="reply">"返信"</string>
     <string name="post_gallery_activity_label">"ギャラリー投稿"</string>
-    <string name="trending_activity_label">"トレンド"</string>
     <string name="action_share_post_link">"投稿リンクを共有"</string>
     <string name="bottom_sheet_post_gallery">"ギャラリー"</string>
     <string name="posting_gallery">"ギャラリーを投稿"</string>

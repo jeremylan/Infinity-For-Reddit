@@ -14,18 +14,13 @@ import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -38,8 +33,6 @@ import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import ml.docilealligator.infinityforreddit.FragmentCommunicator;
 import ml.docilealligator.infinityforreddit.Infinity;
 import ml.docilealligator.infinityforreddit.NetworkState;
@@ -47,13 +40,13 @@ import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.RecyclerViewContentScrollingInterface;
 import ml.docilealligator.infinityforreddit.RedditDataRoomDatabase;
 import ml.docilealligator.infinityforreddit.SortType;
+import ml.docilealligator.infinityforreddit.account.Account;
 import ml.docilealligator.infinityforreddit.activities.BaseActivity;
 import ml.docilealligator.infinityforreddit.adapters.CommentsListingRecyclerViewAdapter;
 import ml.docilealligator.infinityforreddit.comment.CommentViewModel;
 import ml.docilealligator.infinityforreddit.customtheme.CustomThemeWrapper;
 import ml.docilealligator.infinityforreddit.customviews.LinearLayoutManagerBugFixed;
-import ml.docilealligator.infinityforreddit.events.ChangeDataSavingModeEvent;
-import ml.docilealligator.infinityforreddit.events.ChangeDisableImagePreviewEvent;
+import ml.docilealligator.infinityforreddit.databinding.FragmentCommentsListingBinding;
 import ml.docilealligator.infinityforreddit.events.ChangeNetworkStatusEvent;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
 import ml.docilealligator.infinityforreddit.utils.Utils;
@@ -66,22 +59,8 @@ import retrofit2.Retrofit;
 public class CommentsListingFragment extends Fragment implements FragmentCommunicator {
 
     public static final String EXTRA_USERNAME = "EN";
-    public static final String EXTRA_ACCESS_TOKEN = "EAT";
-    public static final String EXTRA_ACCOUNT_NAME = "EAN";
     public static final String EXTRA_ARE_SAVED_COMMENTS = "EISC";
 
-    @BindView(R.id.coordinator_layout_comments_listing_fragment)
-    CoordinatorLayout mCoordinatorLayout;
-    @BindView(R.id.swipe_refresh_layout_view_comments_listing_fragment)
-    SwipeRefreshLayout mSwipeRefreshLayout;
-    @BindView(R.id.recycler_view_comments_listing_fragment)
-    RecyclerView mCommentRecyclerView;
-    @BindView(R.id.fetch_comments_info_linear_layout_comments_listing_fragment)
-    LinearLayout mFetchCommentInfoLinearLayout;
-    @BindView(R.id.fetch_comments_info_image_view_comments_listing_fragment)
-    ImageView mFetchCommentInfoImageView;
-    @BindView(R.id.fetch_comments_info_text_view_comments_listing_fragment)
-    TextView mFetchCommentInfoTextView;
     CommentViewModel mCommentViewModel;
     @Inject
     @Named("no_oauth")
@@ -107,7 +86,6 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
     CustomThemeWrapper customThemeWrapper;
     @Inject
     Executor mExecutor;
-    private String mAccessToken;
     private RequestManager mGlide;
     private BaseActivity mActivity;
     private LinearLayoutManagerBugFixed mLinearLayoutManager;
@@ -121,6 +99,7 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
     private int swipeRightAction;
     private float swipeActionThreshold;
     private ItemTouchHelper touchHelper;
+    private FragmentCommentsListingBinding binding;
 
     public CommentsListingFragment() {
         // Required empty public constructor
@@ -130,11 +109,9 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_comments_listing, container, false);
+        binding = FragmentCommentsListingBinding.inflate(inflater, container, false);
 
         ((Infinity) mActivity.getApplication()).getAppComponent().inject(this);
-
-        ButterKnife.bind(this, rootView);
 
         EventBus.getDefault().register(this);
 
@@ -145,12 +122,12 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
         Resources resources = getResources();
 
         if ((mActivity instanceof BaseActivity && ((BaseActivity) mActivity).isImmersiveInterface())) {
-            mCommentRecyclerView.setPadding(0, 0, 0, ((BaseActivity) mActivity).getNavBarHeight());
+            binding.recyclerViewCommentsListingFragment.setPadding(0, 0, 0, ((BaseActivity) mActivity).getNavBarHeight());
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                 && mSharedPreferences.getBoolean(SharedPreferencesUtils.IMMERSIVE_INTERFACE_KEY, true)) {
             int navBarResourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
             if (navBarResourceId > 0) {
-                mCommentRecyclerView.setPadding(0, 0, 0, resources.getDimensionPixelSize(navBarResourceId));
+                binding.recyclerViewCommentsListingFragment.setPadding(0, 0, 0, resources.getDimensionPixelSize(navBarResourceId));
             }
         }
 
@@ -187,7 +164,7 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
                 if (touchHelper != null) {
                     exceedThreshold = false;
                     touchHelper.attachToRecyclerView(null);
-                    touchHelper.attachToRecyclerView(mCommentRecyclerView);
+                    touchHelper.attachToRecyclerView(binding.recyclerViewCommentsListingFragment);
                 }
             }
 
@@ -255,20 +232,18 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
         });
 
         if (enableSwipeAction) {
-            touchHelper.attachToRecyclerView(mCommentRecyclerView);
+            touchHelper.attachToRecyclerView(binding.recyclerViewCommentsListingFragment);
         }
-
-        mAccessToken = mCurrentAccountSharedPreferences.getString(SharedPreferencesUtils.ACCESS_TOKEN, null);
 
         new Handler().postDelayed(() -> bindView(resources), 0);
 
-        return rootView;
+        return binding.getRoot();
     }
 
     private void bindView(Resources resources) {
         if (mActivity != null && !mActivity.isFinishing() && !mActivity.isDestroyed()) {
             mLinearLayoutManager = new LinearLayoutManagerBugFixed(mActivity);
-            mCommentRecyclerView.setLayoutManager(mLinearLayoutManager);
+            binding.recyclerViewCommentsListingFragment.setLayoutManager(mLinearLayoutManager);
 
             String username = getArguments().getString(EXTRA_USERNAME);
             String sort = mSortTypeSharedPreferences.getString(SharedPreferencesUtils.SORT_TYPE_USER_COMMENT, SortType.Type.NEW.name());
@@ -281,13 +256,13 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
 
             mAdapter = new CommentsListingRecyclerViewAdapter(mActivity, mOauthRetrofit, customThemeWrapper,
                     getResources().getConfiguration().locale, mSharedPreferences,
-                    getArguments().getString(EXTRA_ACCESS_TOKEN), getArguments().getString(EXTRA_ACCOUNT_NAME),
+                    mActivity.accessToken, mActivity.accountName,
                     username, () -> mCommentViewModel.retryLoadingMore());
 
-            mCommentRecyclerView.setAdapter(mAdapter);
+            binding.recyclerViewCommentsListingFragment.setAdapter(mAdapter);
 
             if (mActivity instanceof RecyclerViewContentScrollingInterface) {
-                mCommentRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                binding.recyclerViewCommentsListingFragment.addOnScrollListener(new RecyclerView.OnScrollListener() {
                     @Override
                     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                         if (dy > 0) {
@@ -301,13 +276,12 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
 
             CommentViewModel.Factory factory;
 
-            if (mAccessToken == null) {
-                factory = new CommentViewModel.Factory(mRetrofit,
-                        resources.getConfiguration().locale, null, username, sortType,
+            if (mActivity.accountName.equals(Account.ANONYMOUS_ACCOUNT)) {
+                factory = new CommentViewModel.Factory(mRetrofit, null, mActivity.accountName, username, sortType,
                         getArguments().getBoolean(EXTRA_ARE_SAVED_COMMENTS));
             } else {
                 factory = new CommentViewModel.Factory(mOauthRetrofit,
-                        resources.getConfiguration().locale, mAccessToken, username, sortType,
+                        mActivity.accessToken, mActivity.accountName, username, sortType,
                         getArguments().getBoolean(EXTRA_ARE_SAVED_COMMENTS));
             }
 
@@ -315,30 +289,30 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
             mCommentViewModel.getComments().observe(getViewLifecycleOwner(), comments -> mAdapter.submitList(comments));
 
             mCommentViewModel.hasComment().observe(getViewLifecycleOwner(), hasComment -> {
-                mSwipeRefreshLayout.setRefreshing(false);
+                binding.swipeRefreshLayoutViewCommentsListingFragment.setRefreshing(false);
                 if (hasComment) {
-                    mFetchCommentInfoLinearLayout.setVisibility(View.GONE);
+                    binding.fetchCommentsInfoLinearLayoutCommentsListingFragment.setVisibility(View.GONE);
                 } else {
-                    mFetchCommentInfoLinearLayout.setOnClickListener(null);
+                    binding.fetchCommentsInfoLinearLayoutCommentsListingFragment.setOnClickListener(null);
                     showErrorView(R.string.no_comments);
                 }
             });
 
             mCommentViewModel.getInitialLoadingState().observe(getViewLifecycleOwner(), networkState -> {
                 if (networkState.getStatus().equals(NetworkState.Status.SUCCESS)) {
-                    mSwipeRefreshLayout.setRefreshing(false);
+                    binding.swipeRefreshLayoutViewCommentsListingFragment.setRefreshing(false);
                 } else if (networkState.getStatus().equals(NetworkState.Status.FAILED)) {
-                    mSwipeRefreshLayout.setRefreshing(false);
-                    mFetchCommentInfoLinearLayout.setOnClickListener(view -> refresh());
+                    binding.swipeRefreshLayoutViewCommentsListingFragment.setRefreshing(false);
+                    binding.fetchCommentsInfoLinearLayoutCommentsListingFragment.setOnClickListener(view -> refresh());
                     showErrorView(R.string.load_comments_failed);
                 } else {
-                    mSwipeRefreshLayout.setRefreshing(true);
+                    binding.swipeRefreshLayoutViewCommentsListingFragment.setRefreshing(true);
                 }
             });
 
             mCommentViewModel.getPaginationNetworkState().observe(getViewLifecycleOwner(), networkState -> mAdapter.setNetworkState(networkState));
 
-            mSwipeRefreshLayout.setOnRefreshListener(() -> mCommentViewModel.refresh());
+            binding.swipeRefreshLayoutViewCommentsListingFragment.setOnRefreshListener(() -> mCommentViewModel.refresh());
         }
     }
 
@@ -387,27 +361,27 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
 
     @Override
     public void refresh() {
-        mFetchCommentInfoLinearLayout.setVisibility(View.GONE);
+        binding.fetchCommentsInfoLinearLayoutCommentsListingFragment.setVisibility(View.GONE);
         mCommentViewModel.refresh();
         mAdapter.setNetworkState(null);
     }
 
     @Override
     public void applyTheme() {
-        mSwipeRefreshLayout.setProgressBackgroundColorSchemeColor(customThemeWrapper.getCircularProgressBarBackground());
-        mSwipeRefreshLayout.setColorSchemeColors(customThemeWrapper.getColorAccent());
-        mFetchCommentInfoTextView.setTextColor(customThemeWrapper.getSecondaryTextColor());
+        binding.swipeRefreshLayoutViewCommentsListingFragment.setProgressBackgroundColorSchemeColor(customThemeWrapper.getCircularProgressBarBackground());
+        binding.swipeRefreshLayoutViewCommentsListingFragment.setColorSchemeColors(customThemeWrapper.getColorAccent());
+        binding.fetchCommentsInfoTextViewCommentsListingFragment.setTextColor(customThemeWrapper.getSecondaryTextColor());
         if (mActivity.typeface != null) {
-            mFetchCommentInfoTextView.setTypeface(mActivity.typeface);
+            binding.fetchCommentsInfoTextViewCommentsListingFragment.setTypeface(mActivity.typeface);
         }
     }
 
     private void showErrorView(int stringResId) {
         if (mActivity != null && isAdded()) {
-            mSwipeRefreshLayout.setRefreshing(false);
-            mFetchCommentInfoLinearLayout.setVisibility(View.VISIBLE);
-            mFetchCommentInfoTextView.setText(stringResId);
-            mGlide.load(R.drawable.error_image).into(mFetchCommentInfoImageView);
+            binding.swipeRefreshLayoutViewCommentsListingFragment.setRefreshing(false);
+            binding.fetchCommentsInfoLinearLayoutCommentsListingFragment.setVisibility(View.VISIBLE);
+            binding.fetchCommentsInfoTextViewCommentsListingFragment.setText(stringResId);
+            mGlide.load(R.drawable.error_image).into(binding.fetchCommentsInfoImageViewCommentsListingFragment);
         }
     }
 
@@ -433,7 +407,7 @@ public class CommentsListingFragment extends Fragment implements FragmentCommuni
             String dataSavingMode = mSharedPreferences.getString(SharedPreferencesUtils.DATA_SAVING_MODE, SharedPreferencesUtils.DATA_SAVING_MODE_OFF);
             if (dataSavingMode.equals(SharedPreferencesUtils.DATA_SAVING_MODE_ONLY_ON_CELLULAR_DATA)) {
                 mAdapter.setDataSavingMode(changeNetworkStatusEvent.connectedNetwork == Utils.NETWORK_TYPE_CELLULAR);
-                refreshAdapter(mCommentRecyclerView, mAdapter);
+                refreshAdapter(binding.recyclerViewCommentsListingFragment, mAdapter);
             }
         }
     }

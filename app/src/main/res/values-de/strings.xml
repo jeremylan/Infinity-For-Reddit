@@ -70,7 +70,6 @@
     <string name="action_share">"Teilen"</string>
     <string name="action_preview">"Vorschau"</string>
     <string name="action_report">"Melden"</string>
-    <string name="action_see_removed">"Entfernten Beitrag ansehen"</string>
     <string name="action_set_wallpaper">"Als Hintergrundbild einstellen"</string>
     <string name="action_send_private_message">"Private Nachricht senden"</string>
     <string name="parse_json_response_error">"Ein Fehler trat beim Abruf der JSON-Antwort auf"</string>
@@ -268,11 +267,6 @@ Tippen für Neuversuch."</string>
     <string name="are_you_sure">"Bist du sicher?"</string>
     <string name="edit">"Bearbeiten"</string>
     <string name="delete">"Löschen"</string>
-    <string name="see_removed_comment">"Entfernten Kommentar ansehen"</string>
-    <string name="fetching_removed_comment">"Rufe entfernten Kommentar ab"</string>
-    <string name="show_removed_comment_failed">"Konnte den entfernten Kommentar nicht finden"</string>
-    <string name="fetching_removed_post">"Rufe entfernten Beitrag ab"</string>
-    <string name="show_removed_post_failed">"Konnte den entfernten Beitrag nicht finden"</string>
     <string name="cancel">"Abbrechen"</string>
     <string name="ok">"OK"</string>
     <string name="edit_success">"Bearbeiten erfolgreich"</string>
@@ -343,7 +337,6 @@ Tippen für Neuversuch."</string>
     <string name="settings_mute_nsfw_video_title">"NSFW-Videos stummschalten"</string>
 
     <!-- Fuzzy -->
-    <string name="settings_automatically_try_redgifs_title">"Automatisch versuchen, Redgifs abzurufen, falls Videos auf Gfycat entfernt wurden."</string>
     <string name="settings_video_player_ignore_nav_bar_title">"Navigationsleiste im Video-Player ignorieren"</string>
     <string name="settings_video_player_ignore_nav_bar_summary">"Kein extra Rand beim Video-Controller"</string>
     <string name="settings_confirm_to_exit">"Verlassen bestätigen"</string>
@@ -773,7 +766,6 @@ Sie ist nicht krank oder so, aber sie könnte sich definitiv bessern."</string>
     <string name="notifications">"Benachrichtigungen"</string>
     <string name="messages">"Nachrichten"</string>
     <string name="message">"Nachricht"</string>
-    <string name="fetch_gfycat_video_failed">"Abruf des Gfycat-Videos fehlgeschlagen"</string>
     <string name="fetch_redgifs_video_failed">"Abruf des Redgifs-Videos fehlgeschlagen"</string>
     <string name="fetching_video_info_please_wait">"Lade Video-Info. Bitte warten."</string>
     <string name="error_fetching_imgur_media">"Kann Bilder nicht laden"</string>
@@ -1009,8 +1001,6 @@ Automatisches Abspielen von Videos ist deaktiviert."</string>
     <string name="settings_hide_the_number_of_comments">"Anzahl der Kommentare verstecken"</string>
     <string name="post_layout_gallery">"Galerie-Ansicht"</string>
     <string name="post_layout_card_2">"Karten-Ansicht 2"</string>
-    <string name="have_trouble_login_title">"Probleme beim Anmelden"</string>
-    <string name="have_trouble_login_message">"Möchtest du eine andere Anmeldungs-Art versuchen?"</string>
     <string name="vote">"Abstimmen"</string>
     <string name="action_share_link">"Link teilen"</string>
     <string name="action_copy_link">"Link kopieren"</string>
@@ -1101,9 +1091,7 @@ Automatisches Abspielen von Videos ist deaktiviert."</string>
 Möchtest du trotzdem fortfahren?"</string>
     <string name="reply">"Antworten"</string>
     <string name="post_gallery_activity_label">"Galeriebeitrag"</string>
-    <string name="trending_activity_label">"Trending"</string>
     <string name="action_share_post_link">"Teile Beitragslink"</string>
-    <string name="trending">"Trending"</string>
     <string name="receive_post_reply_notifications">"Benachrichtigungen für Antworten auf Beiträge empfangen"</string>
     <string name="bottom_sheet_post_gallery">"Galerie"</string>
     <string name="posting_gallery">"Posts Galerie"</string>
@@ -1271,7 +1259,6 @@ Antippen zum Wiederholen."</string>
     <string name="reddit_gallery_item_caption_hint">"Titel (max 180 Buchstaben)"</string>
     <string name="reddit_gallery_item_url_hint">"Url"</string>
     <string name="user_agreement_dialog_title">"Nutzungsbedingungen"</string>
-    <string name="user_agreement_message">"Du musst Reddit Nutzungsbedingungen (%1$s) und Infinity for reddit's Datenschutz-Bestimmungen (%2$s) zustimmen bevor du dich anmelden kannst."</string>
     <string name="agree">"Zustimmen"</string>
     <string name="do_not_agree">"Nicht zustimmen"</string>
     <string name="option_1_hint">"Option 1 (notwendig)"</string>

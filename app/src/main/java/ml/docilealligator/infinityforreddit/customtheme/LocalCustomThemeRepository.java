@@ -6,13 +6,13 @@ import java.util.List;
 
 import ml.docilealligator.infinityforreddit.RedditDataRoomDatabase;
 
-public class CustomThemeRepository {
-    private LiveData<List<CustomTheme>> mAllCustomThemes;
-    private LiveData<CustomTheme> mCurrentLightCustomTheme;
-    private LiveData<CustomTheme> mCurrentDarkCustomTheme;
-    private LiveData<CustomTheme> mCurrentAmoledCustomTheme;
+public class LocalCustomThemeRepository {
+    private final LiveData<List<CustomTheme>> mAllCustomThemes;
+    private final LiveData<CustomTheme> mCurrentLightCustomTheme;
+    private final LiveData<CustomTheme> mCurrentDarkCustomTheme;
+    private final LiveData<CustomTheme> mCurrentAmoledCustomTheme;
 
-    CustomThemeRepository(RedditDataRoomDatabase redditDataRoomDatabase) {
+    LocalCustomThemeRepository(RedditDataRoomDatabase redditDataRoomDatabase) {
         mAllCustomThemes = redditDataRoomDatabase.customThemeDao().getAllCustomThemes();
         mCurrentLightCustomTheme = redditDataRoomDatabase.customThemeDao().getLightCustomThemeLiveData();
         mCurrentDarkCustomTheme = redditDataRoomDatabase.customThemeDao().getDarkCustomThemeLiveData();

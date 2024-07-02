@@ -68,7 +68,6 @@
     <string name="action_share">"Sdílet"</string>
     <string name="action_preview">"Náhled"</string>
     <string name="action_report">"Nahlásit"</string>
-    <string name="action_see_removed">"Zobrazit odebrané"</string>
     <string name="action_set_wallpaper">"Nastavit jako pozadí"</string>
     <string name="action_send_private_message">"Poslat soukromou zprávu"</string>
     <string name="parse_json_response_error">"Při parsování JSON odpovědi se vyskytla chyba"</string>
@@ -274,11 +273,6 @@
     <string name="are_you_sure">"Opravdu?"</string>
     <string name="edit">"Upravit"</string>
     <string name="delete">"Odstranit"</string>
-    <string name="see_removed_comment">"Zobrazit odstraněný komentář"</string>
-    <string name="fetching_removed_comment">"Získávání odstraněného komentáře"</string>
-    <string name="show_removed_comment_failed">"Nepodařilo se nalézt odstraněný komentář"</string>
-    <string name="fetching_removed_post">"Získávání odstraněného příspěvku"</string>
-    <string name="show_removed_post_failed">"Nepodařilo se nalézt odstraněný příspěvek"</string>
     <string name="cancel">"Zrušit"</string>
     <string name="ok">"OK"</string>
     <string name="edit_success">"Úspěšně upraveno"</string>
@@ -341,7 +335,6 @@
     <string name="settings_volume_keys_navigate_posts_title">"Použít tlačítka hlasitosti pro navigaci v příspěvcích"</string>
     <string name="settings_mute_video_title">"Ztlumit videa"</string>
     <string name="settings_mute_nsfw_video_title">"Ztlumit NSFW videa"</string>
-    <string name="settings_automatically_try_redgifs_title">"Automatický pokus o přístup k Redgifs, pokud jsou videa na Gfycat odstraněna."</string>
     <string name="settings_video_player_ignore_nav_bar_title">"Ignorovat navigační lištu v přehrávači videí"</string>
     <string name="settings_video_player_ignore_nav_bar_summary">"Zabránit ovládání videa mít dodatečný okraj"</string>
     <string name="settings_confirm_to_exit">"Potvrdit pro odchod"</string>
@@ -757,7 +750,6 @@ Chodí popředu."</string>
     <string name="notifications">"Oznámení"</string>
     <string name="messages">"Zprávy"</string>
     <string name="message">"Zpráva"</string>
-    <string name="fetch_gfycat_video_failed">"Získávání Gfycat videa selhalo"</string>
     <string name="fetch_redgifs_video_failed">"Získávání Redgifs videa selhalo"</string>
     <string name="fetching_video_info_please_wait">"Získávání informací o videu. Čekejte prosím."</string>
     <string name="error_fetching_imgur_media">"Nelze načíst obrázky"</string>
@@ -972,8 +964,6 @@ Automatické přehrávání videí je zakázáno."</string>
     <string name="settings_hide_the_number_of_comments">"Skrýt počet komentářů"</string>
     <string name="post_layout_gallery">"Rozložení galerie"</string>
     <string name="post_layout_card_2">"Rozložení karet 2"</string>
-    <string name="have_trouble_login_title">"Problémy s přihlášením"</string>
-    <string name="have_trouble_login_message">"Chcete zkusit jiný způsob přihlášení?"</string>
     <string name="vote">"Hlasovat"</string>
     <string name="action_share_link">"Sdílet odkaz"</string>
     <string name="action_copy_link">"Zkopírovat odkaz"</string>
@@ -1062,9 +1052,7 @@ Automatické přehrávání videí je zakázáno."</string>
 Stále chcete tuto možnost povolit?"</string>
     <string name="reply">"Odpovědět"</string>
     <string name="post_gallery_activity_label">"Příspěvek galerie"</string>
-    <string name="trending_activity_label">"Trendy"</string>
     <string name="action_share_post_link">"Sdílet odkaz příspěvku"</string>
-    <string name="trending">"Trendy"</string>
     <string name="receive_post_reply_notifications">"Získávat oznámení o odpovědích na příspěvek"</string>
     <string name="bottom_sheet_post_gallery">"Galerie"</string>
     <string name="posting_gallery">"Galerie příspěvků"</string>
@@ -1230,7 +1218,6 @@ Pokud ano, přejmenujte je, než povolíte Material You."</string>
     <string name="reddit_gallery_item_caption_hint">"Popis (max 180 znaků)"</string>
     <string name="reddit_gallery_item_url_hint">"URL"</string>
     <string name="user_agreement_dialog_title">"Smlouva s uživatelem"</string>
-    <string name="user_agreement_message">"Před přihlášením musíte souhlasit se Smlovou s uživatelem Redditu (%1$s) a Zásadami ochrany osobních údajů aplikace Infinity for Reddit (%2$s)"</string>
     <string name="agree">"Souhlasím"</string>
     <string name="do_not_agree">"Nesouhlasit"</string>
     <string name="option_1_hint">"Možnost 1 (Povinná)"</string>

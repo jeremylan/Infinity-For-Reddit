@@ -70,7 +70,6 @@
     <string name="action_share">"Compartir"</string>
     <string name="action_preview">"Previsualizar"</string>
     <string name="action_report">"Reportar"</string>
-    <string name="action_see_removed">"Ver eliminados"</string>
     <string name="action_set_wallpaper">"Definir como fondo de pantalla"</string>
     <string name="action_send_private_message">"Enviar mensaje privado"</string>
     <string name="parse_json_response_error">"No fue posible procesar la respuesta JSON"</string>
@@ -282,11 +281,6 @@ Toca para reintentar."</string>
     <string name="are_you_sure">"¿Estás seguro?"</string>
     <string name="edit">"Editar"</string>
     <string name="delete">"Borrar"</string>
-    <string name="see_removed_comment">"Ver comentario eliminado"</string>
-    <string name="fetching_removed_comment">"Obteniendo el comentario"</string>
-    <string name="show_removed_comment_failed">"No se encontró el comentario eliminado"</string>
-    <string name="fetching_removed_post">"Obteniendo la publicación eliminada"</string>
-    <string name="show_removed_post_failed">"No se encontró la publicación eliminada"</string>
     <string name="cancel">"Cancelar"</string>
     <string name="ok">"OK"</string>
 
@@ -358,7 +352,6 @@ Premio means prize, so it's better suited the first word instead of the second o
     <string name="settings_volume_keys_navigate_posts_title">"Usar las teclas de volumen para navegar publicaciones"</string>
     <string name="settings_mute_video_title">"Silenciar vídeos"</string>
     <string name="settings_mute_nsfw_video_title">"Silenciar vídeos NSFW"</string>
-    <string name="settings_automatically_try_redgifs_title">"Intentar acceder automáticamente a Redgifs si se eliminan los videos en Gfycat"</string>
     <string name="settings_video_player_ignore_nav_bar_title">"Ignorar la barra de navegación en el reproductor de vídeo"</string>
     <string name="settings_video_player_ignore_nav_bar_summary">"Bloquear al controlador de vídeo para que no tenga margen extra"</string>
     <string name="settings_confirm_to_exit">"Confirmar para salir"</string>
@@ -798,7 +791,6 @@ No está enferma ni nada, pero definitivamente podría mejorar."</string>
     <string name="notifications">"Notificaciones"</string>
     <string name="messages">"Mensajes"</string>
     <string name="message">"Mensaje"</string>
-    <string name="fetch_gfycat_video_failed">"No fue posible obtener el vídeo de Gfycat"</string>
     <string name="fetch_redgifs_video_failed">"No fue posible obtener el vídeo de Redgifs"</string>
     <string name="fetching_video_info_please_wait">"Obteniendo información del vídeo. Por favor espera."</string>
     <string name="error_fetching_imgur_media">"No fue posible cargar las imágenes"</string>
@@ -1020,8 +1012,6 @@ https://s3.eu-west-1.amazonaws.com/po-pub/i/hJAe7sMhrfJzqjhp9VkDQOVC.PNG -->
     <string name="settings_hide_the_number_of_comments">"Ocultar el número de comentarios"</string>
     <string name="post_layout_gallery">"Diseño de galería"</string>
     <string name="post_layout_card_2">"Diseño de tarjeta 2"</string>
-    <string name="have_trouble_login_title">"Tenemos problemas para iniciar sesión"</string>
-    <string name="have_trouble_login_message">"¿Quieres probar otra manera de iniciar sesión?"</string>
     <string name="vote">"Votar"</string>
     <string name="action_share_link">"Compartir enlace"</string>
     <string name="action_copy_link">"Copiar enlace"</string>
@@ -1112,9 +1102,7 @@ https://s3.eu-west-1.amazonaws.com/po-pub/i/hJAe7sMhrfJzqjhp9VkDQOVC.PNG -->
 ¿Seguro que quieres activarlo?"</string>
     <string name="reply">"Responder"</string>
     <string name="post_gallery_activity_label">"Publicación de galería"</string>
-    <string name="trending_activity_label">"Tendencias"</string>
     <string name="action_share_post_link">"Compartir enlace de publicación"</string>
-    <string name="trending">"Tendencias"</string>
     <string name="receive_post_reply_notifications">"Recibir notificaciones de respuesta a publicaciones"</string>
     <string name="bottom_sheet_post_gallery">"Galería"</string>
     <string name="posting_gallery">"Publicación de galería"</string>
@@ -1244,7 +1232,7 @@ Toque para volver a intentarlo."</string>
     <string name="message_change_banner_success">"Banner cambiado correctamente"</string>
     <string name="message_change_banner_failed">"Error al cambiar banner %s"</string>
     <string name="message_save_profile_success">"Perfil guardado correctamente"</string>
-    <string name="message_save_profile_failed">"Error al guardar perfil"</string>
+    <string name="message_save_profile_failed">Error al guardar perfil %s</string>
     <string name="post_poll_activity_label">"Publicación de encuesta"</string>
     <string name="action_open_external_browser">"Abrir en el navegador"</string>
 
@@ -1280,7 +1268,6 @@ Toque para volver a intentarlo."</string>
     <string name="reddit_gallery_item_caption_hint">"Subtítulo (máximo 180 caracteres)"</string>
     <string name="reddit_gallery_item_url_hint">"Url"</string>
     <string name="user_agreement_dialog_title">"Acuerdo del usuario"</string>
-    <string name="user_agreement_message">"Tienes que aceptar el Acuerdo de usuario de Reddit (%1$s) y la Política de privacidad de Infinity para Reddit (%2$s) antes de iniciar sesión."</string>
     <string name="agree">"Aceptar"</string>
     <string name="do_not_agree">"Rechazar"</string>
     <string name="option_1_hint">"Opción 1 (Obligatorio)"</string>

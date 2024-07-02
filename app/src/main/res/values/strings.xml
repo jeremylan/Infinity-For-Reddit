@@ -40,7 +40,6 @@
     <string name="search_users_result_activity_label">Users</string>
     <string name="multireddit_selection_activity_label">Select a Multireddit</string>
     <string name="post_gallery_activity_label">Gallery Post</string>
-    <string name="trending_activity_label">Trending</string>
     <string name="wiki_activity_label">Wiki</string>
     <string name="edit_profile_activity_label">Edit Profile</string>
     <string name="post_poll_activity_label">Poll Post</string>
@@ -78,7 +77,6 @@
     <string name="action_share">Share</string>
     <string name="action_preview">Preview</string>
     <string name="action_report">Report</string>
-    <string name="action_see_removed">See Removed</string>
     <string name="action_crosspost">Crosspost</string>
     <string name="action_set_wallpaper">Set as Wallpaper</string>
     <string name="action_send_private_message">Send Private Message</string>
@@ -142,7 +140,6 @@
     <string name="history">History</string>
     <string name="inbox">Inbox</string>
     <string name="inbox_with_count">Inbox (%1$,d)</string>
-    <string name="trending">Trending</string>
     <string name="upvoted">Upvoted</string>
     <string name="downvoted">Downvoted</string>
     <string name="hidden">Hidden</string>
@@ -208,6 +205,7 @@
     <string name="error_processing_image">Error processing image</string>
     <string name="error_processing_video">Error processing video</string>
     <string name="two_options_required">A good poll needs two or more options!</string>
+    <string name="convert_to_richtext_json_failed">Could not process markdown</string>
 
     <string name="download_started">Download Started. Check the notification for progress.</string>
 
@@ -219,6 +217,7 @@
 
     <string name="post_title_hint">Title</string>
     <string name="post_text_content_hint">Content</string>
+    <string name="post_optional_text_content_hint">Content (optional)</string>
     <string name="choose_a_subreddit">Choose a subreddit</string>
     <string name="rules">Rules</string>
     <string name="post_link_hint">URL</string>
@@ -332,11 +331,6 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
-    <string name="see_removed_comment">See Removed Comment</string>
-    <string name="fetching_removed_comment">Fetching removed comment</string>
-    <string name="show_removed_comment_failed">Could not find the removed comment</string>
-    <string name="fetching_removed_post">Fetching removed post</string>
-    <string name="show_removed_post_failed">Could not find the removed post</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="edit_success">Edit successfully</string>
@@ -403,7 +397,6 @@
     <string name="settings_volume_keys_navigate_posts_title">Use Volume Keys to Navigate Posts</string>
     <string name="settings_mute_video_title">Mute Videos</string>
     <string name="settings_mute_nsfw_video_title">Mute NSFW Videos</string>
-    <string name="settings_automatically_try_redgifs_title">Automatically Try Accessing Redgifs if Videos on Gfycat are Removed.</string>
     <string name="settings_video_player_ignore_nav_bar_title">Ignore Navigation Bar in Video Player</string>
     <string name="settings_video_player_ignore_nav_bar_summary">Prevent the Video Controller Having Extra Margin</string>
     <string name="settings_main_page_back_button_action">Main Page Back Button Action</string>
@@ -768,9 +761,9 @@
     <string name="theme_item_color_primary_dark">Color Primary Dark</string>
     <string name="theme_item_color_primary_dark_detail">Applied to: Status Bar</string>
     <string name="theme_item_color_accent">Color Accent</string>
-    <string name="theme_item_color_accent_detail">Applied to: Progress Bar, etc</string>
+    <string name="theme_item_color_accent_detail">Applied to: Progress Bar and background of Floating Action Button, etc</string>
     <string name="theme_item_color_primary_light_theme">Color Primary Light Theme</string>
-    <string name="theme_item_color_primary_light_theme_detail">Applied to: background of Floating Action Button and Button</string>
+    <string name="theme_item_color_primary_light_theme_detail">Applied to: Button</string>
     <string name="theme_item_primary_text_color">Primary Text Color</string>
     <string name="theme_item_primary_text_color_detail">Applied to: Primary text</string>
     <string name="theme_item_secondary_text_color">Secondary Text Color</string>
@@ -1019,7 +1012,6 @@
     <string name="messages">Messages</string>
     <string name="message">Message</string>
 
-    <string name="fetch_gfycat_video_failed">Fetch Gfycat video failed</string>
     <string name="fetch_redgifs_video_failed">Fetch Redgifs video failed</string>
     <string name="fetching_video_info_please_wait">Fetching video info. Please wait.</string>
     <string name="fetch_streamable_video_failed">Fetch Streamable video failed</string>
@@ -1057,7 +1049,7 @@
 
     <string name="top_score">%1$s pts</string>
 
-    <string name="login_activity_2fa_prompt">If you have 2-factor authentication enabled, kindly type your password like the following: &lt;password&gt;:&lt;2FA code&gt;.\nExample: yourpass:123456</string>
+    <string name="login_activity_2fa_prompt">2-factor authentication: &lt;password&gt;:&lt;2FA code&gt;.\nExample: yourpass:123456\nGoogle login or having trouble login: click the bottom right button.</string>
 
     <string name="block_user">Block User</string>
     <string name="block_user_success">Blocked</string>
@@ -1165,8 +1157,8 @@
 
     <string name="choose_a_user">Choose a user</string>
 
-    <string name="have_trouble_login_title">Having Trouble Login</string>
-    <string name="have_trouble_login_message">Do you want to try another way to login?</string>
+    <string name="open_login_page">Open login page</string>
+    <string name="custom_tab_not_available">Chrome custom tab not available. Is Chrome or Firefox installed?</string>
 
     <string name="vote">Vote</string>
 
@@ -1221,6 +1213,18 @@
     <string name="reply">Reply</string>
 
     <string name="uploaded_images">Uploaded Images</string>
+    <string name="uploaded_images_explanation">This is an experimental feature, and here are some things you need to know:\n
+        1. Uploaded images will not be shown in the text editor, and instead, a piece of text will be inserted as a block,
+    with a format similar to ![](XXXXX). XXXXX is the image id, and it should not be modified. To add a caption for
+    your image, simply type between the brackets. Example: ![This is a caption](XXXXX). Note that the caption will be treated
+    as plain text.\n
+        2. To write a superscript, please use ^(), and put the texts inside the parentheses, instead of only
+    using a single ^. For simplicity, click the superscript option in the formatting tools to insert a superscript.\n
+        3. This feature converts your markdown to rich text format and some formatting may be lost in the process.\n
+        4. Uploaded images may not be shown on the preview screen.\n
+        5. You cannot edit a submitted post with embedded images in it.\n
+        6. Please do not change your account using the account chooser on the editing screen. You should switch
+        your account in the navigation drawer on the main screen.</string>
     <string name="select_image">Select an Image</string>
     <string name="capture">Capture</string>
     <string name="uploading_image">Uploading</string>
@@ -1293,7 +1297,7 @@
     <string name="reddit_gallery_item_url_hint">Url</string>
 
     <string name="user_agreement_dialog_title">User Agreement</string>
-    <string name="user_agreement_message">You need to agree to Reddit User Agreement (%1$s) and Infinity for Reddit\'s Privacy Policy (%2$s) before logging in.</string>
+    <string name="user_agreement_message">You need to agree to Reddit User Agreement (%1$s) and Infinity for Reddit\'s Privacy Policy (%2$s) before logging in.\n\nFrom now on, you will need a monthly subscription to access the Reddit API within Infinity for Reddit and this is because Reddit has started charging for API access since July 1st, 2023.</string>
     <string name="agree">Agree</string>
     <string name="do_not_agree">Don\'t Agree</string>
 
@@ -1375,5 +1379,9 @@
     <string name="i_understand">I understand</string>
 
     <string name="add_to_comment_filter">Add to Comment Filter</string>
+    <string name="cannot_edit_post_with_images">Editing posts with images is not allowed.</string>
+
+    <string name="local">Local</string>
+    <string name="online">Online</string>
 
 </resources>

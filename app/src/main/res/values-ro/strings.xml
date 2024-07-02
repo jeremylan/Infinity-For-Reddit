@@ -68,7 +68,6 @@
     <string name="action_share">"Distribuire"</string>
     <string name="action_preview">"Previzualizare"</string>
     <string name="action_report">"Raportați"</string>
-    <string name="action_see_removed">"Vedeți eliminate"</string>
     <string name="action_set_wallpaper">"Setați ca fundal"</string>
     <string name="action_send_private_message">"Trimiteți mesaj privat"</string>
     <string name="parse_json_response_error">"Eroare la afișarea răspunsului JSON"</string>
@@ -268,11 +267,6 @@ Apăsați pentru reîncărcare."</string>
     <string name="are_you_sure">"Sunteți sigur?"</string>
     <string name="edit">"Editare"</string>
     <string name="delete">"Ștergere"</string>
-    <string name="see_removed_comment">"Vedeți comentariul șters"</string>
-    <string name="fetching_removed_comment">"Se caută comentariul șters"</string>
-    <string name="show_removed_comment_failed">"Nu s-a găsit comentariul șters"</string>
-    <string name="fetching_removed_post">"Se caută postarea ștearsă"</string>
-    <string name="show_removed_post_failed">"Nu s-a găsit postarea ștearsă"</string>
     <string name="cancel">"Anulare"</string>
     <string name="ok">"OK"</string>
     <string name="edit_success">"Editare reușită"</string>
@@ -335,7 +329,6 @@ Apăsați pentru reîncărcare."</string>
     <string name="settings_volume_keys_navigate_posts_title">"Utilizați tastele de volum pentru a naviga postările"</string>
     <string name="settings_mute_video_title">"Oprire sunet videoclipuri"</string>
     <string name="settings_mute_nsfw_video_title">"Oprire sunet videoclipuri NSFW"</string>
-    <string name="settings_automatically_try_redgifs_title">"Încercați să accesați Redgifs dacă videourile de pe Gfycat sunt șterse."</string>
     <string name="settings_video_player_ignore_nav_bar_title">"Ignorați bara de navigare în player-ul video"</string>
     <string name="settings_video_player_ignore_nav_bar_summary">"Împiedicați player-ul video din a avea margine suplimentară"</string>
     <string name="settings_confirm_to_exit">"Confirmare ieșire"</string>
@@ -749,7 +742,6 @@ Nu e bolnavă sau ceva de genul, dar cu siguranță ar putea să se facă bine."
     <string name="notifications">"Notificări"</string>
     <string name="messages">"Mesaje"</string>
     <string name="message">"Mesaj"</string>
-    <string name="fetch_gfycat_video_failed">"Obținerea videoclipului Gfycat a eșuat"</string>
     <string name="fetch_redgifs_video_failed">"Obținerea videoclipului Redgifs a eșuat"</string>
     <string name="fetching_video_info_please_wait">"Se obțin informații despre video. Te rugăm să aștepți."</string>
     <string name="error_fetching_imgur_media">"Nu s-au putut încărca imaginile"</string>
@@ -964,8 +956,6 @@ Redarea automată a videoclipurilor este dezactivată."</string>
     <string name="settings_hide_the_number_of_comments">"Ascunde Numărul de Comentarii"</string>
     <string name="post_layout_gallery">"Aspectul Galeriei"</string>
     <string name="post_layout_card_2">"Aspect Card 2"</string>
-    <string name="have_trouble_login_title">"Există Probleme de Autentificare"</string>
-    <string name="have_trouble_login_message">"Dorești să încerci o altă modalitate de autentificare?"</string>
     <string name="vote">"Votează"</string>
     <string name="action_share_link">"Partajează link"</string>
     <string name="action_copy_link">"Copie Link-ul"</string>
@@ -1052,9 +1042,7 @@ Redarea automată a videoclipurilor este dezactivată."</string>
 Încă dorești să-l activezi?"</string>
     <string name="reply">"Răspunde"</string>
     <string name="post_gallery_activity_label">"Postare Galerie"</string>
-    <string name="trending_activity_label">"În Tendințe"</string>
     <string name="action_share_post_link">"Partajează link postare"</string>
-    <string name="trending">"În Tendințe"</string>
     <string name="receive_post_reply_notifications">"Primește notificări de răspuns la postări"</string>
     <string name="bottom_sheet_post_gallery">"Galerie"</string>
     <string name="posting_gallery">"Galeria de Postări"</string>
@@ -1222,7 +1210,6 @@ Apasă pentru a reîncerca."</string>
     <string name="reddit_gallery_item_caption_hint">"Notiță (maxim 180 caractere)"</string>
     <string name="reddit_gallery_item_url_hint">"Adresă"</string>
     <string name="user_agreement_dialog_title">"Acordul Utilizatorului"</string>
-    <string name="user_agreement_message">"Trebuie să fii de acord cu Acordul Utilizatorului Reddit (%1$s) și Politica Reddit de Confidențialitate (%2$s) înainte să te autentifici."</string>
     <string name="agree">"Sunt de acord"</string>
     <string name="do_not_agree">"Nu sunt de acord"</string>
     <string name="option_1_hint">"Opțiunea 1 (Obligatoriu)"</string>

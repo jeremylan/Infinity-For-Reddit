@@ -68,7 +68,6 @@
     <string name="action_share">"Paylaş"</string>
     <string name="action_preview">"Önizleme"</string>
     <string name="action_report">"Bildir"</string>
-    <string name="action_see_removed">"Kaldırılanları Göster"</string>
     <string name="action_set_wallpaper">"Duvar Kağıdı Yap"</string>
     <string name="action_send_private_message">"Özel Mesaj Gönder"</string>
     <string name="parse_json_response_error">"JSON yanıtı ayrıştırılırken hata oluştu"</string>
@@ -269,11 +268,6 @@ Tekrar denemek için tıklayın."</string>
     <string name="are_you_sure">"Emin misiniz?"</string>
     <string name="edit">"Düzenle"</string>
     <string name="delete">"Sil"</string>
-    <string name="see_removed_comment">"Kaldırılan Yorumu Gör"</string>
-    <string name="fetching_removed_comment">"Kaldırılan yorum getiriliyor"</string>
-    <string name="show_removed_comment_failed">"Kaldırılan yorum bulunamadı"</string>
-    <string name="fetching_removed_post">"Kaldırılan gönderi getiriliyor"</string>
-    <string name="show_removed_post_failed">"Kaldırılan gönderi bulunamadı"</string>
     <string name="cancel">"İptal"</string>
     <string name="ok">"Tamam"</string>
     <string name="edit_success">"Başarıyla düzenlendi"</string>
@@ -338,7 +332,6 @@ Tekrar denemek için tıklayın."</string>
     <string name="settings_mute_nsfw_video_title">"NSFW Videolarını Sessize Al"</string>
 
     <!-- Fuzzy -->
-    <string name="settings_automatically_try_redgifs_title">"Gfycat'teki Videolar Kaldırılmışsa Otomatik Olarak Redgif'lere Erişmeyi Dene."</string>
     <string name="settings_video_player_ignore_nav_bar_title">"Video Oynatıcısındaki Navigasyon Çubuğunu Yoksay"</string>
     <string name="settings_video_player_ignore_nav_bar_summary">"Video Denetleyicisinde Fazladan Kenar Olmasını Önle"</string>
     <string name="settings_confirm_to_exit">"Çıkışı Doğrula"</string>
@@ -757,7 +750,6 @@ Amoled Tema Şablonu Oluştur"</string>
     <string name="notifications">"Bildirimler"</string>
     <string name="messages">"Mesajlar"</string>
     <string name="message">"Mesaj"</string>
-    <string name="fetch_gfycat_video_failed">"Gfycat video'su alınamadı"</string>
     <string name="fetch_redgifs_video_failed">"Redgifs video'su alınamadı"</string>
     <string name="fetching_video_info_please_wait">"Video bilgisi alınıyor. Lütfen bekleyin."</string>
     <string name="error_fetching_imgur_media">"Görüntüler yüklenemedi"</string>
@@ -988,8 +980,6 @@ Otomatik video oynatma kapatılır."</string>
     <string name="settings_hide_the_number_of_comments">"Yorum Sayısını Gizle"</string>
     <string name="post_layout_gallery">"Galeri Düzeni"</string>
     <string name="post_layout_card_2">"Kart Düzeni 2"</string>
-    <string name="have_trouble_login_title">"Giriş Yapmakta Sorun Yaşanıyor"</string>
-    <string name="have_trouble_login_message">"Giriş yapmanın başka bir yolunu denemek ister misiniz?"</string>
     <string name="vote">"Oy"</string>
     <string name="action_share_link">"Bağlantıyı Paylaş"</string>
     <string name="action_copy_link">"Bağlantıyı Kopyala"</string>
@@ -1082,9 +1072,7 @@ Otomatik video oynatma kapatılır."</string>
 Yine de etkinleştirmek istiyor musunuz?"</string>
     <string name="reply">"Yanıtla"</string>
     <string name="post_gallery_activity_label">"Galeri Gönderisi"</string>
-    <string name="trending_activity_label">"Trendler"</string>
     <string name="action_share_post_link">"Gönderi Bağlantısını Paylaş"</string>
-    <string name="trending">"Trendler"</string>
     <string name="receive_post_reply_notifications">"Gönderi yanıtlanınca bildirimlerini al"</string>
     <string name="bottom_sheet_post_gallery">"Galeri"</string>
     <string name="posting_gallery">"Galeri Paylaşma"</string>
@@ -1250,7 +1238,6 @@ Tekrar denemek için tıklayın."</string>
     <string name="reddit_gallery_item_caption_hint">"Altyazı (en fazla 180 karakter)"</string>
     <string name="reddit_gallery_item_url_hint">"Bağlantı Adresi"</string>
     <string name="user_agreement_dialog_title">"Kullanıcı Sözleşmesi"</string>
-    <string name="user_agreement_message">"Giriş yapmadan önce Reddit Kullanıcı Sözleşmesini (%1$s) ve Infinity for Reddit Gizlilik Politikasını (%2$s) kabul etmeniz gerekir."</string>
     <string name="agree">"Kabul et"</string>
     <string name="do_not_agree">"Kabul etme"</string>
     <string name="option_1_hint">"Seçenek 1 (Zorunlu)"</string>

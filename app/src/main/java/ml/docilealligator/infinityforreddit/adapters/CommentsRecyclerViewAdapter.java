@@ -12,10 +12,8 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,14 +28,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.button.MaterialButton;
-import com.lsjwzh.widget.materialloadingprogressbar.CircleProgressBar;
 
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.MarkwonConfiguration;
@@ -48,6 +43,7 @@ import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.SaveThing;
 import ml.docilealligator.infinityforreddit.SortType;
 import ml.docilealligator.infinityforreddit.VoteThing;
+import ml.docilealligator.infinityforreddit.account.Account;
 import ml.docilealligator.infinityforreddit.activities.BaseActivity;
 import ml.docilealligator.infinityforreddit.activities.CommentActivity;
 import ml.docilealligator.infinityforreddit.activities.LinkResolverActivity;
@@ -65,11 +61,18 @@ import ml.docilealligator.infinityforreddit.customviews.SpoilerOnClickTextView;
 import ml.docilealligator.infinityforreddit.customviews.SwipeLockInterface;
 import ml.docilealligator.infinityforreddit.customviews.SwipeLockLinearLayoutManager;
 import ml.docilealligator.infinityforreddit.databinding.ItemCommentBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemCommentFooterErrorBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemCommentFooterLoadingBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemCommentFullyCollapsedBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemLoadCommentsBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemLoadCommentsFailedPlaceholderBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemLoadMoreCommentsPlaceholderBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemNoCommentPlaceholderBinding;
 import ml.docilealligator.infinityforreddit.fragments.ViewPostDetailFragment;
-import ml.docilealligator.infinityforreddit.markdown.EvenBetterLinkMovementMethod;
 import ml.docilealligator.infinityforreddit.markdown.CustomMarkwonAdapter;
 import ml.docilealligator.infinityforreddit.markdown.EmoteCloseBracketInlineProcessor;
 import ml.docilealligator.infinityforreddit.markdown.EmotePlugin;
+import ml.docilealligator.infinityforreddit.markdown.EvenBetterLinkMovementMethod;
 import ml.docilealligator.infinityforreddit.markdown.ImageAndGifEntry;
 import ml.docilealligator.infinityforreddit.markdown.ImageAndGifPlugin;
 import ml.docilealligator.infinityforreddit.markdown.MarkdownUtils;
@@ -93,70 +96,70 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     private static final int VIEW_TYPE_LOAD_MORE_COMMENTS_FAILED = 16;
     private static final int VIEW_TYPE_VIEW_ALL_COMMENTS = 17;
 
-    private BaseActivity mActivity;
-    private ViewPostDetailFragment mFragment;
-    private Executor mExecutor;
-    private Retrofit mRetrofit;
-    private Retrofit mOauthRetrofit;
-    private EmoteCloseBracketInlineProcessor mEmoteCloseBracketInlineProcessor;
-    private EmotePlugin mEmotePlugin;
-    private ImageAndGifPlugin mImageAndGifPlugin;
-    private Markwon mCommentMarkwon;
-    private ImageAndGifEntry mImageAndGifEntry;
-    private String mAccessToken;
-    private String mAccountName;
-    private Post mPost;
-    private ArrayList<Comment> mVisibleComments;
-    private Locale mLocale;
-    private RequestManager mGlide;
-    private RecyclerView.RecycledViewPool recycledViewPool;
+    private final BaseActivity mActivity;
+    private final ViewPostDetailFragment mFragment;
+    private final Executor mExecutor;
+    private final Retrofit mRetrofit;
+    private final Retrofit mOauthRetrofit;
+    private final EmoteCloseBracketInlineProcessor mEmoteCloseBracketInlineProcessor;
+    private final EmotePlugin mEmotePlugin;
+    private final ImageAndGifPlugin mImageAndGifPlugin;
+    private final Markwon mCommentMarkwon;
+    private final ImageAndGifEntry mImageAndGifEntry;
+    private final String mAccessToken;
+    private final String mAccountName;
+    private final Post mPost;
+    private final ArrayList<Comment> mVisibleComments;
+    private final Locale mLocale;
+    private final RequestManager mGlide;
+    private final RecyclerView.RecycledViewPool recycledViewPool;
     private String mSingleCommentId;
     private boolean mIsSingleCommentThreadMode;
-    private boolean mVoteButtonsOnTheRight;
-    private boolean mShowElapsedTime;
-    private String mTimeFormatPattern;
-    private boolean mExpandChildren;
-    private boolean mCommentToolbarHidden;
-    private boolean mCommentToolbarHideOnClick;
-    private boolean mSwapTapAndLong;
-    private boolean mShowCommentDivider;
-    private int mDividerType;
-    private boolean mShowAbsoluteNumberOfVotes;
-    private boolean mFullyCollapseComment;
-    private boolean mShowOnlyOneCommentLevelIndicator;
-    private boolean mShowAuthorAvatar;
-    private boolean mAlwaysShowChildCommentCount;
-    private boolean mHideTheNumberOfVotes;
-    private int mDepthThreshold;
-    private CommentRecyclerViewAdapterCallback mCommentRecyclerViewAdapterCallback;
+    private final boolean mVoteButtonsOnTheRight;
+    private final boolean mShowElapsedTime;
+    private final String mTimeFormatPattern;
+    private final boolean mExpandChildren;
+    private final boolean mCommentToolbarHidden;
+    private final boolean mCommentToolbarHideOnClick;
+    private final boolean mSwapTapAndLong;
+    private final boolean mShowCommentDivider;
+    private final int mDividerType;
+    private final boolean mShowAbsoluteNumberOfVotes;
+    private final boolean mFullyCollapseComment;
+    private final boolean mShowOnlyOneCommentLevelIndicator;
+    private final boolean mShowAuthorAvatar;
+    private final boolean mAlwaysShowChildCommentCount;
+    private final boolean mHideTheNumberOfVotes;
+    private final int mDepthThreshold;
+    private final CommentRecyclerViewAdapterCallback mCommentRecyclerViewAdapterCallback;
     private boolean isInitiallyLoading;
     private boolean isInitiallyLoadingFailed;
     private boolean mHasMoreComments;
     private boolean loadMoreCommentsFailed;
-    private Drawable expandDrawable;
-    private Drawable collapseDrawable;
+    private final Drawable expandDrawable;
+    private final Drawable collapseDrawable;
 
-    private int mColorPrimaryLightTheme;
-    private int mColorAccent;
-    private int mCircularProgressBarBackgroundColor;
-    private int mSecondaryTextColor;
-    private int mPrimaryTextColor;
-    private int mCommentTextColor;
-    private int mCommentBackgroundColor;
-    private int mDividerColor;
-    private int mUsernameColor;
-    private int mSubmitterColor;
-    private int mModeratorColor;
-    private int mCurrentUserColor;
-    private int mAuthorFlairTextColor;
-    private int mUpvotedColor;
-    private int mDownvotedColor;
-    private int mSingleCommentThreadBackgroundColor;
-    private int mVoteAndReplyUnavailableVoteButtonColor;
-    private int mButtonTextColor;
-    private int mCommentIconAndInfoColor;
-    private int mFullyCollapsedCommentBackgroundColor;
-    private int[] verticalBlockColors;
+    private final int mColorPrimaryLightTheme;
+    private final int mColorAccent;
+    private final int mCircularProgressBarBackgroundColor;
+    private final int mSecondaryTextColor;
+    private final int mPrimaryTextColor;
+    private final int mCommentTextColor;
+    private final int mCommentBackgroundColor;
+    private final int mDividerColor;
+    private final int mUsernameColor;
+    private final int mSubmitterColor;
+    private final int mModeratorColor;
+    private final int mCurrentUserColor;
+    private final int mAuthorFlairTextColor;
+    private final int mUpvotedColor;
+    private final int mDownvotedColor;
+    private final int mSingleCommentThreadBackgroundColor;
+    private final int mVoteAndReplyUnavailableVoteButtonColor;
+    private final int mButtonTextColor;
+    private final int mCommentIconAndInfoColor;
+    private final int mFullyCollapsedCommentBackgroundColor;
+    private final int[] verticalBlockColors;
 
     private int mSearchCommentIndex = -1;
 
@@ -165,7 +168,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public CommentsRecyclerViewAdapter(BaseActivity activity, ViewPostDetailFragment fragment,
                                        CustomThemeWrapper customThemeWrapper,
                                        Executor executor, Retrofit retrofit, Retrofit oauthRetrofit,
-                                       String accessToken, String accountName,
+                                       @Nullable String accessToken, @NonNull String accountName,
                                        Post post, Locale locale, String singleCommentId,
                                        boolean isSingleCommentThreadMode,
                                        SharedPreferences sharedPreferences,
@@ -174,8 +177,10 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         mActivity = activity;
         mFragment = fragment;
         mExecutor = executor;
-        mRetrofit = retrofit;
+        mRetrofit =
         mOauthRetrofit = oauthRetrofit;
+        mAccessToken = accessToken;
+        mAccountName = accountName;
         mGlide = Glide.with(activity);
         mSecondaryTextColor = customThemeWrapper.getSecondaryTextColor();
         mCommentTextColor = customThemeWrapper.getCommentColor();
@@ -235,9 +240,9 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 miscPlugin, mEmoteCloseBracketInlineProcessor, mEmotePlugin, mImageAndGifPlugin, mCommentTextColor,
                 commentSpoilerBackgroundColor, onLinkLongClickListener);
 
-        boolean needBlurNsfw = nsfwAndSpoilerSharedPreferences.getBoolean((mAccountName == null ? "" : mAccountName) + SharedPreferencesUtils.BLUR_NSFW_BASE, true);
-        boolean doNotBlurNsfwInNsfwSubreddits = nsfwAndSpoilerSharedPreferences.getBoolean((mAccountName == null ? "" : mAccountName) + SharedPreferencesUtils.DO_NOT_BLUR_NSFW_IN_NSFW_SUBREDDITS, false);
-        boolean needBlurSpoiler = nsfwAndSpoilerSharedPreferences.getBoolean((mAccountName == null ? "" : mAccountName) + SharedPreferencesUtils.BLUR_SPOILER_BASE, false);
+        boolean needBlurNsfw = nsfwAndSpoilerSharedPreferences.getBoolean((mAccountName.equals(Account.ANONYMOUS_ACCOUNT) ? "" : mAccountName) + SharedPreferencesUtils.BLUR_NSFW_BASE, true);
+        boolean doNotBlurNsfwInNsfwSubreddits = nsfwAndSpoilerSharedPreferences.getBoolean((mAccountName.equals(Account.ANONYMOUS_ACCOUNT) ? "" : mAccountName) + SharedPreferencesUtils.DO_NOT_BLUR_NSFW_IN_NSFW_SUBREDDITS, false);
+        boolean needBlurSpoiler = nsfwAndSpoilerSharedPreferences.getBoolean((mAccountName.equals(Account.ANONYMOUS_ACCOUNT) ? "" : mAccountName) + SharedPreferencesUtils.BLUR_SPOILER_BASE, false);
         boolean blurImage = (post.isNSFW() && needBlurNsfw && !(doNotBlurNsfwInNsfwSubreddits && mFragment != null && mFragment.getIsNsfwSubreddit())) || (post.isSpoiler() && needBlurSpoiler);
         mImageAndGifEntry = new ImageAndGifEntry(activity, mGlide, blurImage,
                 mediaMetadata -> {
@@ -256,8 +261,6 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     }
                 });
         recycledViewPool = new RecyclerView.RecycledViewPool();
-        mAccessToken = accessToken;
-        mAccountName = accountName;
         mPost = post;
         mVisibleComments = new ArrayList<>();
         mLocale = locale;
@@ -322,7 +325,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public int getItemViewType(int position) {
-        if (mVisibleComments.size() == 0) {
+        if (mVisibleComments.isEmpty()) {
             if (isInitiallyLoading) {
                 return VIEW_TYPE_FIRST_LOADING;
             } else if (isInitiallyLoadingFailed) {
@@ -386,21 +389,21 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_FIRST_LOADING:
-                return new LoadCommentsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_load_comments, parent, false));
+                return new LoadCommentsViewHolder(ItemLoadCommentsBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             case VIEW_TYPE_FIRST_LOADING_FAILED:
-                return new LoadCommentsFailedViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_load_comments_failed_placeholder, parent, false));
+                return new LoadCommentsFailedViewHolder(ItemLoadCommentsFailedPlaceholderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             case VIEW_TYPE_NO_COMMENT_PLACEHOLDER:
-                return new NoCommentViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_no_comment_placeholder, parent, false));
+                return new NoCommentViewHolder(ItemNoCommentPlaceholderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             case VIEW_TYPE_COMMENT:
                 return new CommentViewHolder(ItemCommentBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             case VIEW_TYPE_COMMENT_FULLY_COLLAPSED:
-                return new CommentFullyCollapsedViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment_fully_collapsed, parent, false));
+                return new CommentFullyCollapsedViewHolder(ItemCommentFullyCollapsedBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             case VIEW_TYPE_LOAD_MORE_CHILD_COMMENTS:
-                return new LoadMoreChildCommentsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_load_more_comments_placeholder, parent, false));
+                return new LoadMoreChildCommentsViewHolder(ItemLoadMoreCommentsPlaceholderBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             case VIEW_TYPE_IS_LOADING_MORE_COMMENTS:
-                return new IsLoadingMoreCommentsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment_footer_loading, parent, false));
+                return new IsLoadingMoreCommentsViewHolder(ItemCommentFooterLoadingBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             case VIEW_TYPE_LOAD_MORE_COMMENTS_FAILED:
-                return new LoadMoreCommentsFailedViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment_footer_error, parent, false));
+                return new LoadMoreCommentsFailedViewHolder(ItemCommentFooterErrorBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
             default:
                 return new ViewAllCommentsViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_view_all_comments, parent, false));
         }
@@ -582,7 +585,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             Comment comment = getCurrentComment(position);
             if (comment != null) {
                 String authorWithPrefix = "u/" + comment.getAuthor();
-                ((CommentFullyCollapsedViewHolder) holder).usernameTextView.setText(authorWithPrefix);
+                ((CommentFullyCollapsedViewHolder) holder).binding.userNameTextViewItemCommentFullyCollapsed.setText(authorWithPrefix);
 
                 if (comment.getAuthorIconUrl() == null) {
                     mFragment.loadIcon(comment.getAuthor(), (authorName, iconUrl) -> {
@@ -596,7 +599,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                                     .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(72, 0)))
                                     .error(mGlide.load(R.drawable.subreddit_default_icon)
                                             .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(72, 0))))
-                                    .into(((CommentFullyCollapsedViewHolder) holder).authorIconImageView);
+                                    .into(((CommentFullyCollapsedViewHolder) holder).binding.authorIconImageViewItemCommentFullyCollapsed);
                         }
                     });
                 } else {
@@ -604,30 +607,30 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                             .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(72, 0)))
                             .error(mGlide.load(R.drawable.subreddit_default_icon)
                                     .apply(RequestOptions.bitmapTransform(new RoundedCornersTransformation(72, 0))))
-                            .into(((CommentFullyCollapsedViewHolder) holder).authorIconImageView);
+                            .into(((CommentFullyCollapsedViewHolder) holder).binding.authorIconImageViewItemCommentFullyCollapsed);
                 }
 
                 if (comment.getChildCount() > 0) {
-                    ((CommentFullyCollapsedViewHolder) holder).childCountTextView.setVisibility(View.VISIBLE);
-                    ((CommentFullyCollapsedViewHolder) holder).childCountTextView.setText("+" + comment.getChildCount());
+                    ((CommentFullyCollapsedViewHolder) holder).binding.childCountTextViewItemCommentFullyCollapsed.setVisibility(View.VISIBLE);
+                    ((CommentFullyCollapsedViewHolder) holder).binding.childCountTextViewItemCommentFullyCollapsed.setText("+" + comment.getChildCount());
                 } else {
-                    ((CommentFullyCollapsedViewHolder) holder).childCountTextView.setVisibility(View.GONE);
+                    ((CommentFullyCollapsedViewHolder) holder).binding.childCountTextViewItemCommentFullyCollapsed.setVisibility(View.GONE);
                 }
                 if (mShowElapsedTime) {
-                    ((CommentFullyCollapsedViewHolder) holder).commentTimeTextView.setText(Utils.getElapsedTime(mActivity, comment.getCommentTimeMillis()));
+                    ((CommentFullyCollapsedViewHolder) holder).binding.timeTextViewItemCommentFullyCollapsed.setText(Utils.getElapsedTime(mActivity, comment.getCommentTimeMillis()));
                 } else {
-                    ((CommentFullyCollapsedViewHolder) holder).commentTimeTextView.setText(Utils.getFormattedTime(mLocale, comment.getCommentTimeMillis(), mTimeFormatPattern));
+                    ((CommentFullyCollapsedViewHolder) holder).binding.timeTextViewItemCommentFullyCollapsed.setText(Utils.getFormattedTime(mLocale, comment.getCommentTimeMillis(), mTimeFormatPattern));
                 }
                 if (!comment.isScoreHidden() && !mHideTheNumberOfVotes) {
-                    ((CommentFullyCollapsedViewHolder) holder).scoreTextView.setText(mActivity.getString(R.string.top_score,
+                    ((CommentFullyCollapsedViewHolder) holder).binding.scoreTextViewItemCommentFullyCollapsed.setText(mActivity.getString(R.string.top_score,
                             Utils.getNVotes(mShowAbsoluteNumberOfVotes, comment.getScore() + comment.getVoteType())));
                 } else if (mHideTheNumberOfVotes) {
-                    ((CommentFullyCollapsedViewHolder) holder).scoreTextView.setText(mActivity.getString(R.string.vote));
+                    ((CommentFullyCollapsedViewHolder) holder).binding.scoreTextViewItemCommentFullyCollapsed.setText(mActivity.getString(R.string.vote));
                 } else {
-                    ((CommentFullyCollapsedViewHolder) holder).scoreTextView.setText(mActivity.getString(R.string.hidden));
+                    ((CommentFullyCollapsedViewHolder) holder).binding.scoreTextViewItemCommentFullyCollapsed.setText(mActivity.getString(R.string.hidden));
                 }
-                ((CommentFullyCollapsedViewHolder) holder).commentIndentationView.setShowOnlyOneDivider(mShowOnlyOneCommentLevelIndicator);
-                ((CommentFullyCollapsedViewHolder) holder).commentIndentationView.setLevelAndColors(comment.getDepth(), verticalBlockColors);
+                ((CommentFullyCollapsedViewHolder) holder).binding.verticalBlockIndentationItemCommentFullyCollapsed.setShowOnlyOneDivider(mShowOnlyOneCommentLevelIndicator);
+                ((CommentFullyCollapsedViewHolder) holder).binding.verticalBlockIndentationItemCommentFullyCollapsed.setLevelAndColors(comment.getDepth(), verticalBlockColors);
 
                 if (mShowCommentDivider) {
                     if (mDividerType == DIVIDER_PARENT && comment.getDepth() == 0) {
@@ -641,23 +644,23 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             placeholder = mIsSingleCommentThreadMode ? mVisibleComments.get(holder.getBindingAdapterPosition() - 1)
                     : mVisibleComments.get(holder.getBindingAdapterPosition());
 
-            ((LoadMoreChildCommentsViewHolder) holder).commentIndentationView.setShowOnlyOneDivider(mShowOnlyOneCommentLevelIndicator);
-            ((LoadMoreChildCommentsViewHolder) holder).commentIndentationView.setLevelAndColors(placeholder.getDepth(), verticalBlockColors);
+            ((LoadMoreChildCommentsViewHolder) holder).binding.verticalBlockIndentationItemLoadMoreCommentsPlaceholder.setShowOnlyOneDivider(mShowOnlyOneCommentLevelIndicator);
+            ((LoadMoreChildCommentsViewHolder) holder).binding.verticalBlockIndentationItemLoadMoreCommentsPlaceholder.setLevelAndColors(placeholder.getDepth(), verticalBlockColors);
 
             if (placeholder.getPlaceholderType() == Comment.PLACEHOLDER_LOAD_MORE_COMMENTS) {
                 if (placeholder.isLoadingMoreChildren()) {
-                    ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.loading);
+                    ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.loading);
                 } else if (placeholder.isLoadMoreChildrenFailed()) {
-                    ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.comment_load_more_comments_failed);
+                    ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.comment_load_more_comments_failed);
                 } else {
-                    ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.comment_load_more_comments);
+                    ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.comment_load_more_comments);
                 }
             } else {
-                ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.comment_continue_thread);
+                ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.comment_continue_thread);
             }
 
             if (placeholder.getPlaceholderType() == Comment.PLACEHOLDER_LOAD_MORE_COMMENTS) {
-                ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setOnClickListener(view -> {
+                ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setOnClickListener(view -> {
                     int commentPosition = mIsSingleCommentThreadMode ? holder.getBindingAdapterPosition() - 1 : holder.getBindingAdapterPosition();
                     int parentPosition = getParentPosition(commentPosition);
                     if (parentPosition >= 0) {
@@ -665,12 +668,12 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
                         mVisibleComments.get(commentPosition).setLoadingMoreChildren(true);
                         mVisibleComments.get(commentPosition).setLoadMoreChildrenFailed(false);
-                        ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.loading);
+                        ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.loading);
 
-                        Retrofit retrofit = mAccessToken == null ? mRetrofit : mOauthRetrofit;
+                        Retrofit retrofit = mAccountName.equals(Account.ANONYMOUS_ACCOUNT) ? mRetrofit : mOauthRetrofit;
                         SortType.Type sortType = mCommentRecyclerViewAdapterCallback.getSortType();
                         FetchComment.fetchMoreComment(mExecutor, new Handler(), retrofit, mAccessToken,
-                                parentComment.getMoreChildrenIds(),
+                                mAccountName, parentComment.getMoreChildrenIds(),
                                 mExpandChildren, mPost.getFullName(), sortType, new FetchComment.FetchMoreCommentListener() {
                                     @Override
                                     public void onFetchMoreCommentSuccess(ArrayList<Comment> topLevelComments,
@@ -690,7 +693,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                                                     if (placeholderPosition != -1) {
                                                         mVisibleComments.get(placeholderPosition).setLoadingMoreChildren(false);
                                                         mVisibleComments.get(placeholderPosition).setLoadMoreChildrenFailed(false);
-                                                        ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.comment_load_more_comments);
+                                                        ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.comment_load_more_comments);
 
                                                         mVisibleComments.addAll(placeholderPosition, expandedComments);
                                                         if (mIsSingleCommentThreadMode) {
@@ -745,7 +748,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                                                         if (placeholderPosition != -1) {
                                                             mVisibleComments.get(placeholderPosition).setLoadingMoreChildren(false);
                                                             mVisibleComments.get(placeholderPosition).setLoadMoreChildrenFailed(false);
-                                                            ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.comment_load_more_comments);
+                                                            ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.comment_load_more_comments);
 
                                                             mVisibleComments.addAll(placeholderPosition, expandedComments);
                                                             if (mIsSingleCommentThreadMode) {
@@ -791,7 +794,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                                                 mVisibleComments.get(placeholderPosition).setLoadingMoreChildren(false);
                                                 mVisibleComments.get(placeholderPosition).setLoadMoreChildrenFailed(true);
                                             }
-                                            ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setText(R.string.comment_load_more_comments_failed);
+                                            ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setText(R.string.comment_load_more_comments_failed);
                                         }
                                         currentParentComment.getChildren().get(currentParentComment.getChildren().size() - 1)
                                                 .setLoadingMoreChildren(false);
@@ -802,7 +805,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     }
                 });
             } else {
-                ((LoadMoreChildCommentsViewHolder) holder).placeholderTextView.setOnClickListener(view -> {
+                ((LoadMoreChildCommentsViewHolder) holder).binding.placeholderTextViewItemLoadMoreComments.setOnClickListener(view -> {
                     Comment comment = getCurrentComment(holder);
                     if (comment != null) {
                         Intent intent = new Intent(mActivity, ViewPostDetailActivity.class);
@@ -818,6 +821,26 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
 
     public void setCanStartActivity(boolean canStartActivity) {
         this.canStartActivity = canStartActivity;
+    }
+
+    @Nullable
+    private Comment getCurrentComment(RecyclerView.ViewHolder holder) {
+        return getCurrentComment(holder.getBindingAdapterPosition());
+    }
+
+    @Nullable
+    private Comment getCurrentComment(int position) {
+        if (mIsSingleCommentThreadMode) {
+            if (position - 1 >= 0 && position - 1 < mVisibleComments.size()) {
+                return mVisibleComments.get(position - 1);
+            }
+        } else {
+            if (position >= 0 && position < mVisibleComments.size()) {
+                return mVisibleComments.get(position);
+            }
+        }
+
+        return null;
     }
 
     private int getParentPosition(int position) {
@@ -841,15 +864,6 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return findCommentPosition(fullName, positionHint, Comment.NOT_PLACEHOLDER);
     }
 
-    /**
-     * Find position of comment with given {@code fullName} and
-     * {@link Comment#PLACEHOLDER_LOAD_MORE_COMMENTS} placeholder type
-     * @return position of the placeholder or -1 if not found
-     */
-    private int findLoadMoreCommentsPlaceholderPosition(String fullName, int positionHint) {
-        return findCommentPosition(fullName, positionHint, Comment.PLACEHOLDER_LOAD_MORE_COMMENTS);
-    }
-
     private int findCommentPosition(String fullName, int positionHint, int placeholderType) {
         if (0 <= positionHint && positionHint < mVisibleComments.size()
                 && mVisibleComments.get(positionHint).getFullName().equals(fullName)
@@ -866,8 +880,17 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         return -1;
     }
 
+    /**
+     * Find position of comment with given {@code fullName} and
+     * {@link Comment#PLACEHOLDER_LOAD_MORE_COMMENTS} placeholder type
+     * @return position of the placeholder or -1 if not found
+     */
+    private int findLoadMoreCommentsPlaceholderPosition(String fullName, int positionHint) {
+        return findCommentPosition(fullName, positionHint, Comment.PLACEHOLDER_LOAD_MORE_COMMENTS);
+    }
+
     private void expandChildren(ArrayList<Comment> comments, ArrayList<Comment> newList) {
-        if (comments != null && comments.size() > 0) {
+        if (comments != null && !comments.isEmpty()) {
             for (Comment comment : comments) {
                 newList.add(comment);
                 expandChildren(comment.getChildren(), newList);
@@ -905,10 +928,10 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public void addComments(@NonNull ArrayList<Comment> comments, boolean hasMoreComments) {
-        if (mVisibleComments.size() == 0) {
+        if (mVisibleComments.isEmpty()) {
             isInitiallyLoading = false;
             isInitiallyLoadingFailed = false;
-            if (comments.size() == 0) {
+            if (comments.isEmpty() || mIsSingleCommentThreadMode) {
                 notifyItemChanged(0);
             } else {
                 notifyItemRemoved(0);
@@ -918,7 +941,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         int sizeBefore = mVisibleComments.size();
         mVisibleComments.addAll(comments);
         if (mIsSingleCommentThreadMode) {
-            notifyItemRangeInserted(sizeBefore, comments.size() + 1);
+            notifyItemRangeInserted(sizeBefore + 1, comments.size());
         } else {
             notifyItemRangeInserted(sizeBefore, comments.size());
         }
@@ -1033,24 +1056,6 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         mVisibleComments.get(position).setSubmittedByAuthor(mVisibleComments.get(position).isSubmitter());
 
         mVisibleComments.get(position).setCommentMarkdown(commentContentMarkdown);
-        if (mIsSingleCommentThreadMode) {
-            notifyItemChanged(position + 1);
-        } else {
-            notifyItemChanged(position);
-        }
-    }
-
-    public void editComment(Comment fetchedComment, Comment originalComment, int position) {
-        if (position >= mVisibleComments.size() || !mVisibleComments.get(position).equals(originalComment)) {
-            position = mVisibleComments.indexOf(originalComment);
-            if (position < 0) {
-                Toast.makeText(mActivity, R.string.show_removed_comment_failed, Toast.LENGTH_SHORT).show();
-                return;
-            }
-        }
-        mVisibleComments.get(position).setSubmittedByAuthor(originalComment.isSubmitter());
-        mVisibleComments.get(position).setCommentMarkdown(fetchedComment.getCommentMarkdown());
-
         if (mIsSingleCommentThreadMode) {
             notifyItemChanged(position + 1);
         } else {
@@ -1182,7 +1187,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             return 1;
         }
 
-        if (isInitiallyLoadingFailed || mVisibleComments.size() == 0) {
+        if (isInitiallyLoadingFailed || mVisibleComments.isEmpty()) {
             return mIsSingleCommentThreadMode ? 2 : 1;
         }
 
@@ -1356,7 +1361,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                 }
             });
             commentMarkdownView.setLayoutManager(linearLayoutManager);
-            mMarkwonAdapter = MarkdownUtils.createCustomTablesAdapter(mImageAndGifEntry);
+            mMarkwonAdapter = MarkdownUtils.createCustomTablesAndImagesAdapter(mActivity, mImageAndGifEntry);
             commentMarkdownView.setAdapter(mMarkwonAdapter);
 
             itemView.setBackgroundColor(mCommentBackgroundColor);
@@ -1387,14 +1392,12 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             });
 
             moreButton.setOnClickListener(view -> {
-                getItemCount();
                 Comment comment = getCurrentComment(this);
                 if (comment != null) {
                     Bundle bundle = new Bundle();
                     if (!mPost.isArchived() && !mPost.isLocked() && comment.getAuthor().equals(mAccountName)) {
                         bundle.putBoolean(CommentMoreBottomSheetFragment.EXTRA_EDIT_AND_DELETE_AVAILABLE, true);
                     }
-                    bundle.putString(CommentMoreBottomSheetFragment.EXTRA_ACCESS_TOKEN, mAccessToken);
                     bundle.putParcelable(CommentMoreBottomSheetFragment.EXTRA_COMMENT, comment);
                     if (mIsSingleCommentThreadMode) {
                         bundle.putInt(CommentMoreBottomSheetFragment.EXTRA_POSITION, getBindingAdapterPosition() - 1);
@@ -1412,7 +1415,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
             });
 
             replyButton.setOnClickListener(view -> {
-                if (mAccessToken == null) {
+                if (mAccountName.equals(Account.ANONYMOUS_ACCOUNT)) {
                     Toast.makeText(mActivity, R.string.login_first, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -1449,7 +1452,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     return;
                 }
 
-                if (mAccessToken == null) {
+                if (mAccountName.equals(Account.ANONYMOUS_ACCOUNT)) {
                     Toast.makeText(mActivity, R.string.login_first, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -1540,7 +1543,7 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
                     return;
                 }
 
-                if (mAccessToken == null) {
+                if (mAccountName.equals(Account.ANONYMOUS_ACCOUNT)) {
                     Toast.makeText(mActivity, R.string.login_first, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -1828,69 +1831,36 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    @Nullable
-    private Comment getCurrentComment(RecyclerView.ViewHolder holder) {
-        return getCurrentComment(holder.getBindingAdapterPosition());
-    }
-
-    @Nullable
-    private Comment getCurrentComment(int position) {
-        if (mIsSingleCommentThreadMode) {
-            if (position - 1 >= 0 && position - 1 < mVisibleComments.size()) {
-                return mVisibleComments.get(position - 1);
-            }
-        } else {
-            if (position >= 0 && position < mVisibleComments.size()) {
-                return mVisibleComments.get(position);
-            }
-        }
-
-        return null;
-    }
-
     class CommentFullyCollapsedViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.vertical_block_indentation_item_comment_fully_collapsed)
-        CommentIndentationView commentIndentationView;
-        @BindView(R.id.author_icon_image_view_item_comment_fully_collapsed)
-        ImageView authorIconImageView;
-        @BindView(R.id.user_name_text_view_item_comment_fully_collapsed)
-        TextView usernameTextView;
-        @BindView(R.id.child_count_text_view_item_comment_fully_collapsed)
-        TextView childCountTextView;
-        @BindView(R.id.score_text_view_item_comment_fully_collapsed)
-        TextView scoreTextView;
-        @BindView(R.id.time_text_view_item_comment_fully_collapsed)
-        TextView commentTimeTextView;
-        @BindView(R.id.divider_item_comment_fully_collapsed)
-        View commentDivider;
+        ItemCommentFullyCollapsedBinding binding;
 
-        public CommentFullyCollapsedViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        public CommentFullyCollapsedViewHolder(@NonNull ItemCommentFullyCollapsedBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
 
             if (mActivity.typeface != null) {
-                usernameTextView.setTypeface(mActivity.typeface);
-                childCountTextView.setTypeface(mActivity.typeface);
-                scoreTextView.setTypeface(mActivity.typeface);
-                commentTimeTextView.setTypeface(mActivity.typeface);
+                binding.userNameTextViewItemCommentFullyCollapsed.setTypeface(mActivity.typeface);
+                binding.childCountTextViewItemCommentFullyCollapsed.setTypeface(mActivity.typeface);
+                binding.scoreTextViewItemCommentFullyCollapsed.setTypeface(mActivity.typeface);
+                binding.timeTextViewItemCommentFullyCollapsed.setTypeface(mActivity.typeface);
             }
             itemView.setBackgroundColor(mFullyCollapsedCommentBackgroundColor);
-            usernameTextView.setTextColor(mUsernameColor);
-            childCountTextView.setTextColor(mSecondaryTextColor);
-            scoreTextView.setTextColor(mSecondaryTextColor);
-            commentTimeTextView.setTextColor(mSecondaryTextColor);
+            binding.userNameTextViewItemCommentFullyCollapsed.setTextColor(mUsernameColor);
+            binding.childCountTextViewItemCommentFullyCollapsed.setTextColor(mSecondaryTextColor);
+            binding.scoreTextViewItemCommentFullyCollapsed.setTextColor(mSecondaryTextColor);
+            binding.timeTextViewItemCommentFullyCollapsed.setTextColor(mSecondaryTextColor);
 
             if (mShowCommentDivider) {
                 if (mDividerType == DIVIDER_NORMAL) {
-                    commentDivider.setBackgroundColor(mDividerColor);
-                    commentDivider.setVisibility(View.VISIBLE);
+                    binding.dividerItemCommentFullyCollapsed.setBackgroundColor(mDividerColor);
+                    binding.dividerItemCommentFullyCollapsed.setVisibility(View.VISIBLE);
                 }
             }
 
             if (mShowAuthorAvatar) {
-                authorIconImageView.setVisibility(View.VISIBLE);
+                binding.authorIconImageViewItemCommentFullyCollapsed.setVisibility(View.VISIBLE);
             } else {
-                usernameTextView.setPaddingRelative(0, usernameTextView.getPaddingTop(), usernameTextView.getPaddingEnd(), usernameTextView.getPaddingBottom());
+                binding.userNameTextViewItemCommentFullyCollapsed.setPaddingRelative(0, binding.userNameTextViewItemCommentFullyCollapsed.getPaddingTop(), binding.userNameTextViewItemCommentFullyCollapsed.getPaddingEnd(), binding.userNameTextViewItemCommentFullyCollapsed.getPaddingBottom());
             }
 
             itemView.setOnClickListener(view -> {
@@ -1923,102 +1893,90 @@ public class CommentsRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     class LoadMoreChildCommentsViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.vertical_block_indentation_item_load_more_comments_placeholder)
-        CommentIndentationView commentIndentationView;
-        @BindView(R.id.placeholder_text_view_item_load_more_comments)
-        TextView placeholderTextView;
-        @BindView(R.id.divider_item_load_more_comments_placeholder)
-        View commentDivider;
+        ItemLoadMoreCommentsPlaceholderBinding binding;
 
-        LoadMoreChildCommentsViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        LoadMoreChildCommentsViewHolder(@NonNull ItemLoadMoreCommentsPlaceholderBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
 
             if (mShowCommentDivider) {
                 if (mDividerType == DIVIDER_NORMAL) {
-                    commentDivider.setBackgroundColor(mDividerColor);
-                    commentDivider.setVisibility(View.VISIBLE);
+                    binding.dividerItemLoadMoreCommentsPlaceholder.setBackgroundColor(mDividerColor);
+                    binding.dividerItemLoadMoreCommentsPlaceholder.setVisibility(View.VISIBLE);
                 }
             }
 
             if (mActivity.typeface != null) {
-                placeholderTextView.setTypeface(mActivity.typeface);
+                binding.placeholderTextViewItemLoadMoreComments.setTypeface(mActivity.typeface);
             }
             itemView.setBackgroundColor(mCommentBackgroundColor);
-            placeholderTextView.setTextColor(mPrimaryTextColor);
+            binding.placeholderTextViewItemLoadMoreComments.setTextColor(mPrimaryTextColor);
         }
     }
 
     class LoadCommentsViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.comment_progress_bar_item_load_comments)
-        CircleProgressBar circleProgressBar;
+        ItemLoadCommentsBinding binding;
 
-        LoadCommentsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            circleProgressBar.setBackgroundTintList(ColorStateList.valueOf(mCircularProgressBarBackgroundColor));
-            circleProgressBar.setColorSchemeColors(mColorAccent);
+        LoadCommentsViewHolder(@NonNull ItemLoadCommentsBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.commentProgressBarItemLoadComments.setBackgroundTintList(ColorStateList.valueOf(mCircularProgressBarBackgroundColor));
+            binding.commentProgressBarItemLoadComments.setColorSchemeColors(mColorAccent);
         }
     }
 
     class LoadCommentsFailedViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.error_text_view_item_load_comments_failed_placeholder)
-        TextView errorTextView;
+        ItemLoadCommentsFailedPlaceholderBinding binding;
 
-        LoadCommentsFailedViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        LoadCommentsFailedViewHolder(@NonNull ItemLoadCommentsFailedPlaceholderBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
             itemView.setOnClickListener(view -> mCommentRecyclerViewAdapterCallback.retryFetchingComments());
             if (mActivity.typeface != null) {
-                errorTextView.setTypeface(mActivity.typeface);
+                binding.errorTextViewItemLoadCommentsFailedPlaceholder.setTypeface(mActivity.typeface);
             }
-            errorTextView.setTextColor(mSecondaryTextColor);
+            binding.errorTextViewItemLoadCommentsFailedPlaceholder.setTextColor(mSecondaryTextColor);
         }
     }
 
     class NoCommentViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.error_text_view_item_no_comment_placeholder)
-        TextView errorTextView;
+        ItemNoCommentPlaceholderBinding binding;
 
-        NoCommentViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        NoCommentViewHolder(@NonNull ItemNoCommentPlaceholderBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
             if (mActivity.typeface != null) {
-                errorTextView.setTypeface(mActivity.typeface);
+                binding.errorTextViewItemNoCommentPlaceholder.setTypeface(mActivity.typeface);
             }
-            errorTextView.setTextColor(mSecondaryTextColor);
+            binding.errorTextViewItemNoCommentPlaceholder.setTextColor(mSecondaryTextColor);
         }
     }
 
     class IsLoadingMoreCommentsViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.progress_bar_item_comment_footer_loading)
-        ProgressBar progressbar;
+        ItemCommentFooterLoadingBinding binding;
 
-        IsLoadingMoreCommentsViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            progressbar.setIndeterminateTintList(ColorStateList.valueOf(mColorAccent));
+        IsLoadingMoreCommentsViewHolder(@NonNull ItemCommentFooterLoadingBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
+            binding.progressBarItemCommentFooterLoading.setIndeterminateTintList(ColorStateList.valueOf(mColorAccent));
         }
     }
 
     class LoadMoreCommentsFailedViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.error_text_view_item_comment_footer_error)
-        TextView errorTextView;
-        @BindView(R.id.retry_button_item_comment_footer_error)
-        Button retryButton;
+        ItemCommentFooterErrorBinding binding;
 
-        LoadMoreCommentsFailedViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        LoadMoreCommentsFailedViewHolder(@NonNull ItemCommentFooterErrorBinding binding) {
+            super(binding.getRoot());
+            this.binding = binding;
             if (mActivity.typeface != null) {
-                errorTextView.setTypeface(mActivity.typeface);
-                retryButton.setTypeface(mActivity.typeface);
+                binding.errorTextViewItemCommentFooterError.setTypeface(mActivity.typeface);
+                binding.retryButtonItemCommentFooterError.setTypeface(mActivity.typeface);
             }
-            errorTextView.setText(R.string.load_comments_failed);
-            retryButton.setOnClickListener(view -> mCommentRecyclerViewAdapterCallback.retryFetchingMoreComments());
-            errorTextView.setTextColor(mSecondaryTextColor);
-            retryButton.setBackgroundTintList(ColorStateList.valueOf(mColorPrimaryLightTheme));
-            retryButton.setTextColor(mButtonTextColor);
+            binding.errorTextViewItemCommentFooterError.setText(R.string.load_comments_failed);
+            binding.retryButtonItemCommentFooterError.setOnClickListener(view -> mCommentRecyclerViewAdapterCallback.retryFetchingMoreComments());
+            binding.errorTextViewItemCommentFooterError.setTextColor(mSecondaryTextColor);
+            binding.retryButtonItemCommentFooterError.setBackgroundTintList(ColorStateList.valueOf(mColorPrimaryLightTheme));
+            binding.retryButtonItemCommentFooterError.setTextColor(mButtonTextColor);
         }
     }
 

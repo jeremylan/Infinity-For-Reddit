@@ -10,9 +10,7 @@ import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,8 +27,6 @@ import com.google.android.material.button.MaterialButton;
 
 import java.util.Locale;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.noties.markwon.AbstractMarkwonPlugin;
 import io.noties.markwon.Markwon;
 import io.noties.markwon.MarkwonConfiguration;
@@ -40,6 +36,7 @@ import ml.docilealligator.infinityforreddit.NetworkState;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.SaveThing;
 import ml.docilealligator.infinityforreddit.VoteThing;
+import ml.docilealligator.infinityforreddit.account.Account;
 import ml.docilealligator.infinityforreddit.activities.BaseActivity;
 import ml.docilealligator.infinityforreddit.activities.LinkResolverActivity;
 import ml.docilealligator.infinityforreddit.activities.ViewImageOrGifActivity;
@@ -55,10 +52,12 @@ import ml.docilealligator.infinityforreddit.customviews.SpoilerOnClickTextView;
 import ml.docilealligator.infinityforreddit.customviews.SwipeLockInterface;
 import ml.docilealligator.infinityforreddit.customviews.SwipeLockLinearLayoutManager;
 import ml.docilealligator.infinityforreddit.databinding.ItemCommentBinding;
-import ml.docilealligator.infinityforreddit.markdown.EvenBetterLinkMovementMethod;
+import ml.docilealligator.infinityforreddit.databinding.ItemFooterErrorBinding;
+import ml.docilealligator.infinityforreddit.databinding.ItemFooterLoadingBinding;
 import ml.docilealligator.infinityforreddit.markdown.CustomMarkwonAdapter;
 import ml.docilealligator.infinityforreddit.markdown.EmoteCloseBracketInlineProcessor;
 import ml.docilealligator.infinityforreddit.markdown.EmotePlugin;
+import ml.docilealligator.infinityforreddit.markdown.EvenBetterLinkMovementMethod;
 import ml.docilealligator.infinityforreddit.markdown.ImageAndGifEntry;
 import ml.docilealligator.infinityforreddit.markdown.ImageAndGifPlugin;
 import ml.docilealligator.infinityforreddit.markdown.MarkdownUtils;
@@ -82,43 +81,43 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
             return comment.getCommentMarkdown().equals(t1.getCommentMarkdown());
         }
     };
-    private BaseActivity mActivity;
-    private Retrofit mOauthRetrofit;
-    private Locale mLocale;
-    private EmoteCloseBracketInlineProcessor mEmoteCloseBracketInlineProcessor;
-    private EmotePlugin mEmotePlugin;
-    private ImageAndGifPlugin mImageAndGifPlugin;
-    private Markwon mMarkwon;
-    private ImageAndGifEntry mImageAndGifEntry;
-    private RecyclerView.RecycledViewPool recycledViewPool;
-    private String mAccessToken;
-    private String mAccountName;
-    private int mColorPrimaryLightTheme;
-    private int mSecondaryTextColor;
-    private int mCommentBackgroundColor;
+    private final BaseActivity mActivity;
+    private final Retrofit mOauthRetrofit;
+    private final Locale mLocale;
+    private final EmoteCloseBracketInlineProcessor mEmoteCloseBracketInlineProcessor;
+    private final EmotePlugin mEmotePlugin;
+    private final ImageAndGifPlugin mImageAndGifPlugin;
+    private final Markwon mMarkwon;
+    private final ImageAndGifEntry mImageAndGifEntry;
+    private final RecyclerView.RecycledViewPool recycledViewPool;
+    private final String mAccessToken;
+    private final String mAccountName;
+    private final int mColorPrimaryLightTheme;
+    private final int mSecondaryTextColor;
+    private final int mCommentBackgroundColor;
     private int mCommentColor;
-    private int mDividerColor;
-    private int mUsernameColor;
-    private int mAuthorFlairColor;
-    private int mSubredditColor;
-    private int mUpvotedColor;
-    private int mDownvotedColor;
-    private int mButtonTextColor;
-    private int mColorAccent;
-    private int mCommentIconAndInfoColor;
-    private boolean mVoteButtonsOnTheRight;
-    private boolean mShowElapsedTime;
-    private String mTimeFormatPattern;
-    private boolean mShowCommentDivider;
-    private boolean mShowAbsoluteNumberOfVotes;
+    private final int mDividerColor;
+    private final int mUsernameColor;
+    private final int mAuthorFlairColor;
+    private final int mSubredditColor;
+    private final int mUpvotedColor;
+    private final int mDownvotedColor;
+    private final int mButtonTextColor;
+    private final int mColorAccent;
+    private final int mCommentIconAndInfoColor;
+    private final boolean mVoteButtonsOnTheRight;
+    private final boolean mShowElapsedTime;
+    private final String mTimeFormatPattern;
+    private final boolean mShowCommentDivider;
+    private final boolean mShowAbsoluteNumberOfVotes;
     private boolean canStartActivity = true;
     private NetworkState networkState;
-    private RetryLoadingMoreCallback mRetryLoadingMoreCallback;
+    private final RetryLoadingMoreCallback mRetryLoadingMoreCallback;
 
     public CommentsListingRecyclerViewAdapter(BaseActivity activity, Retrofit oauthRetrofit,
                                               CustomThemeWrapper customThemeWrapper, Locale locale,
                                               SharedPreferences sharedPreferences, String accessToken,
-                                              String accountName, String username,
+                                              @NonNull String accountName, String username,
                                               RetryLoadingMoreCallback retryLoadingMoreCallback) {
         super(DIFF_CALLBACK);
         mActivity = activity;
@@ -222,9 +221,9 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
         if (viewType == VIEW_TYPE_DATA) {
             return new CommentViewHolder(ItemCommentBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
         } else if (viewType == VIEW_TYPE_ERROR) {
-            return new ErrorViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_footer_error, parent, false));
+            return new ErrorViewHolder(ItemFooterErrorBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
         } else {
-            return new LoadingViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_footer_loading, parent, false));
+            return new LoadingViewHolder(ItemFooterLoadingBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
         }
     }
 
@@ -526,7 +525,6 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
                     if (comment.getAuthor().equals(mAccountName)) {
                         bundle.putBoolean(CommentMoreBottomSheetFragment.EXTRA_EDIT_AND_DELETE_AVAILABLE, true);
                     }
-                    bundle.putString(CommentMoreBottomSheetFragment.EXTRA_ACCESS_TOKEN, mAccessToken);
                     bundle.putParcelable(CommentMoreBottomSheetFragment.EXTRA_COMMENT, comment);
                     bundle.putInt(CommentMoreBottomSheetFragment.EXTRA_POSITION, getBindingAdapterPosition());
                     CommentMoreBottomSheetFragment commentMoreBottomSheetFragment = new CommentMoreBottomSheetFragment();
@@ -562,7 +560,7 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
                 }
             });
             commentMarkdownView.setLayoutManager(linearLayoutManager);
-            markwonAdapter = MarkdownUtils.createCustomTablesAdapter(mImageAndGifEntry);
+            markwonAdapter = MarkdownUtils.createCustomTablesAndImagesAdapter(mActivity, mImageAndGifEntry);
             markwonAdapter.setOnClickListener(view -> {
                 if (view instanceof SpoilerOnClickTextView) {
                     if (((SpoilerOnClickTextView) view).isSpoilerOnClick()) {
@@ -578,7 +576,7 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
             commentMarkdownView.setAdapter(markwonAdapter);
 
             upvoteButton.setOnClickListener(view -> {
-                if (mAccessToken == null) {
+                if (mAccountName.equals(Account.ANONYMOUS_ACCOUNT)) {
                     Toast.makeText(mActivity, R.string.login_first, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -658,7 +656,7 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
             });
 
             downvoteButton.setOnClickListener(view -> {
-                if (mAccessToken == null) {
+                if (mAccountName.equals(Account.ANONYMOUS_ACCOUNT)) {
                     Toast.makeText(mActivity, R.string.login_first, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -814,34 +812,25 @@ public class CommentsListingRecyclerViewAdapter extends PagedListAdapter<Comment
     }
 
     class ErrorViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.error_text_view_item_footer_error)
-        TextView errorTextView;
-        @BindView(R.id.retry_button_item_footer_error)
-        Button retryButton;
-
-        ErrorViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
+        ErrorViewHolder(@NonNull ItemFooterErrorBinding binding) {
+            super(binding.getRoot());
             if (mActivity.typeface != null) {
-                errorTextView.setTypeface(mActivity.typeface);
-                retryButton.setTypeface(mActivity.typeface);
+                binding.errorTextViewItemFooterError.setTypeface(mActivity.typeface);
+                binding.retryButtonItemFooterError.setTypeface(mActivity.typeface);
             }
-            errorTextView.setText(R.string.load_comments_failed);
-            retryButton.setOnClickListener(view -> mRetryLoadingMoreCallback.retryLoadingMore());
-            errorTextView.setTextColor(mSecondaryTextColor);
-            retryButton.setBackgroundTintList(ColorStateList.valueOf(mColorPrimaryLightTheme));
-            retryButton.setTextColor(mButtonTextColor);
+            binding.errorTextViewItemFooterError.setText(R.string.load_comments_failed);
+            binding.retryButtonItemFooterError.setOnClickListener(view -> mRetryLoadingMoreCallback.retryLoadingMore());
+            binding.errorTextViewItemFooterError.setTextColor(mSecondaryTextColor);
+            binding.retryButtonItemFooterError.setBackgroundTintList(ColorStateList.valueOf(mColorPrimaryLightTheme));
+            binding.retryButtonItemFooterError.setTextColor(mButtonTextColor);
         }
     }
 
     class LoadingViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.progress_bar_item_footer_loading)
-        ProgressBar progressBar;
 
-        LoadingViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-            progressBar.setIndeterminateTintList(ColorStateList.valueOf(mColorAccent));
+        LoadingViewHolder(@NonNull ItemFooterLoadingBinding binding) {
+            super(binding.getRoot());
+            binding.progressBarItemFooterLoading.setIndeterminateTintList(ColorStateList.valueOf(mColorAccent));
         }
     }
 }

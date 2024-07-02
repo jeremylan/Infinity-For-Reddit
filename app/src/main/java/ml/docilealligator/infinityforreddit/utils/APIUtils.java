@@ -19,12 +19,12 @@ public class APIUtils {
     public static final String API_BASE_URI = "https://www.reddit.com";
     public static final String API_UPLOAD_MEDIA_URI = "https://reddit-uploaded-media.s3-accelerate.amazonaws.com";
     public static final String API_UPLOAD_VIDEO_URI = "https://reddit-uploaded-video.s3-accelerate.amazonaws.com";
-    public static final String GFYCAT_API_BASE_URI = "https://api.gfycat.com/v1/gfycats/";
     public static final String REDGIFS_API_BASE_URI = "https://api.redgifs.com";
     public static final String IMGUR_API_BASE_URI = "https://api.imgur.com/3/";
     public static final String PUSHSHIFT_API_BASE_URI = "https://api.pushshift.io/";
     public static final String REVEDDIT_API_BASE_URI = "https://api.reveddit.com/";
     public static final String STREAMABLE_API_BASE_URI = "https://api.streamable.com";
+    public static final String ONLINE_CUSTOM_THEMES_API_BASE_URI = "http://127.0.0.1";
 
     public static final String CLIENT_ID_KEY = "client_id";
     public static final String CLIENT_SECRET_KEY = "client_secret";
@@ -47,7 +47,7 @@ public class APIUtils {
     public static final String AUTHORIZATION_KEY = "Authorization";
     public static final String AUTHORIZATION_BASE = "bearer ";
     public static final String USER_AGENT_KEY = "User-Agent";
-    public static final String USER_AGENT = "Stormclient:v6.2.5 (by /u/sliverinverted)";
+    public static final String USER_AGENT = "Stormclient:" + BuildConfig.VERSION_NAME + "(by /u/sliverinverted)";
 
     public static final String GRANT_TYPE_KEY = "grant_type";
     public static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
@@ -87,6 +87,7 @@ public class APIUtils {
     public static final String KIND_VIDEO = "video";
     public static final String KIND_VIDEOGIF = "videogif";
     public static final String KIND_CROSSPOST = "crosspost";
+    public static final String RICHTEXT_JSON_KEY = "richtext_json";
 
     public static final String FILEPATH_KEY = "filepath";
     public static final String MIMETYPE_KEY = "mimetype";
@@ -106,9 +107,6 @@ public class APIUtils {
     public static final String TO_KEY = "to";
 
     public static final String NAME_KEY = "name";
-
-    public static final String GILD_TYPE = "gild_type";
-    public static final String IS_ANONYMOUS = "is_anonymous";
 
     public static final String ORIGIN_KEY = "Origin";
     public static final String REVEDDIT_ORIGIN = "https://www.reveddit.com";

@@ -1,5 +1,9 @@
 package ml.docilealligator.infinityforreddit.utils;
 
+import android.view.Display;
+
+import androidx.annotation.Nullable;
+
 /**
  * Created by alex on 2/23/18.
  */
@@ -106,7 +110,6 @@ public class SharedPreferencesUtils {
     public static final String VIDEO_AUTOPLAY_VALUE_NEVER = "0";
     public static final String MUTE_AUTOPLAYING_VIDEOS = "mute_autoplaying_videos";
     public static final String AUTOPLAY_NSFW_VIDEOS = "autoplay_nsfw_videos";
-    public static final String AUTOMATICALLY_TRY_REDGIFS = "automatically_try_redgifs";
     public static final String LOCK_JUMP_TO_NEXT_TOP_LEVEL_COMMENT_BUTTON = "lock_jump_to_next_top_level_comment_button";
     public static final String SWAP_TAP_AND_LONG_COMMENTS = "swap_tap_and_long_in_comments";
     public static final String SWIPE_UP_TO_HIDE_JUMP_TO_NEXT_TOP_LEVEL_COMMENT_BUTTON = "swipe_up_to_hide_jump_to_next_top_level_comments_button";
@@ -216,6 +219,42 @@ public class SharedPreferencesUtils {
     public static final String COMMENT_DIVIDER_TYPE = "comment_divider_type";
     public static final String SUBSCRIBED_THINGS_SYNC_TIME = "subscribed_things_sync_time";
     public static final String COMMENT_FILTER = "comment_filter";
+    private static final String POST_DETAIL_FAB_PORTRAIT_X_BASE = "fab_portrait_x_";
+    private static final String POST_DETAIL_FAB_PORTRAIT_Y_BASE = "fab_portrait_y_";
+    private static final String POST_DETAIL_FAB_LANDSCAPE_X_BASE = "fab_landscape_x_";
+    private static final String POST_DETAIL_FAB_LANDSCAPE_Y_BASE = "fab_landscape_y_";
+
+    public static String getPostDetailFabPortraitX(@Nullable Display display) {
+        if (display == null) {
+            return POST_DETAIL_FAB_PORTRAIT_X_BASE;
+        }
+
+        return POST_DETAIL_FAB_PORTRAIT_X_BASE + display.getDisplayId();
+    }
+
+    public static String getPostDetailFabPortraitY(@Nullable Display display) {
+        if (display == null) {
+            return POST_DETAIL_FAB_PORTRAIT_Y_BASE;
+        }
+
+        return POST_DETAIL_FAB_PORTRAIT_Y_BASE + display.getDisplayId();
+    }
+
+    public static String getPostDetailFabLandscapeX(@Nullable Display display) {
+        if (display == null) {
+            return POST_DETAIL_FAB_LANDSCAPE_X_BASE;
+        }
+
+        return POST_DETAIL_FAB_LANDSCAPE_X_BASE + display.getDisplayId();
+    }
+
+    public static String getPostDetailFabLandscapeY(@Nullable Display display) {
+        if (display == null) {
+            return POST_DETAIL_FAB_LANDSCAPE_Y_BASE;
+        }
+
+        return POST_DETAIL_FAB_LANDSCAPE_Y_BASE + display.getDisplayId();
+    }
 
     public static final String DEFAULT_PREFERENCES_FILE = "ml.docilealligator.infinityforreddit_preferences";
     public static final String MAIN_PAGE_TABS_SHARED_PREFERENCES_FILE = "ml.docilealligator.infinityforreddit.main_page_tabs";
@@ -391,8 +430,12 @@ public class SharedPreferencesUtils {
     public static final String BLUR_SPOILER_KEY_LEGACY = "blur_spoiler";
     public static final String CONFIRM_TO_EXIT_LEGACY = "confirm_to_exit";
     public static final String OPEN_LINK_IN_APP_LEGACY = "open_link_in_app";
+    public static final String AUTOMATICALLY_TRY_REDGIFS_LEGACY = "automatically_try_redgifs";
 
     public static final String DO_NOT_SHOW_REDDIT_API_INFO_AGAIN_LEGACY = "do_not_show_reddit_api_info_again";
     public static final String HIDE_THE_NUMBER_OF_AWARDS_LEGACY = "hide_the_number_of_awards";
     public static final String HIDE_COMMENT_AWARDS_LEGACY = "hide_comment_awards";
+
+    //Current account
+    public static final String APPLICATION_ONLY_ACCESS_TOKEN_LEGACY = "app_only_access_token";
 }

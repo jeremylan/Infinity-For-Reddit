@@ -70,7 +70,6 @@
     <string name="action_share">"Compartilhar"</string>
     <string name="action_preview">"Prévia"</string>
     <string name="action_report">"Reportar"</string>
-    <string name="action_see_removed">"Ver excluído"</string>
     <string name="action_set_wallpaper">"Definir como papel de parede"</string>
     <string name="action_send_private_message">"Enviar mensagem privada"</string>
     <string name="parse_json_response_error">"Erro ao analisar a resposta do JSON"</string>
@@ -266,11 +265,6 @@ Toque para tentar de novo."</string>
     <string name="are_you_sure">"Tem certeza?"</string>
     <string name="edit">"Editar"</string>
     <string name="delete">"Excluir"</string>
-    <string name="see_removed_comment">"Ver comentário excluído"</string>
-    <string name="fetching_removed_comment">"Buscando comentário excluído"</string>
-    <string name="show_removed_comment_failed">"Não pôde achar o comentário excluído"</string>
-    <string name="fetching_removed_post">"Buscando postagem excluída"</string>
-    <string name="show_removed_post_failed">"Não pôde achar a postagem excluída"</string>
     <string name="cancel">"Cancelar"</string>
     <string name="ok">"Ok"</string>
     <string name="edit_success">"Êxito ao editar"</string>
@@ -333,7 +327,6 @@ Toque para tentar de novo."</string>
     <string name="settings_volume_keys_navigate_posts_title">"Usar as teclas de volume para navegar em posagens"</string>
     <string name="settings_mute_video_title">"Silenciar Vídeos"</string>
     <string name="settings_mute_nsfw_video_title">"Silenciar Vídeos NSFW"</string>
-    <string name="settings_automatically_try_redgifs_title">"Tentar acessar automaticamente o Redgifs se os vídeos do Gfycat forem excluídos."</string>
     <string name="settings_video_player_ignore_nav_bar_title">"Ignorar barra de navegação no reprodutor de vídeos"</string>
     <string name="settings_video_player_ignore_nav_bar_summary">"Evitar que o Controle de Vídeo Tenha Margens Largas"</string>
     <string name="settings_confirm_to_exit">"Confirmar para Sair"</string>
@@ -743,7 +736,6 @@ Ela não está doente ou algo assim, mas definitivamente poderia melhorar."</str
     <string name="notifications">"Notificações"</string>
     <string name="messages">"Mensagens"</string>
     <string name="message">"Mensagem"</string>
-    <string name="fetch_gfycat_video_failed">"Erro ao buscar vídeos do Gfycat"</string>
     <string name="fetch_redgifs_video_failed">"Erro ao buscar vídeos do Redgifs"</string>
     <string name="fetching_video_info_please_wait">"Obtendo informações do vídeo. Por favor, espere."</string>
     <string name="error_fetching_imgur_media">"Não pode carregar as imagens"</string>
@@ -958,8 +950,6 @@ A reprodução automática de vídeos fica desativada."</string>
     <string name="settings_hide_the_number_of_comments">"Ocultar o Número de Comentários"</string>
     <string name="post_layout_gallery">"Estrutura de galeria"</string>
     <string name="post_layout_card_2">"Estrutura de cartão 2"</string>
-    <string name="have_trouble_login_title">"Tendo problemas para autenticar"</string>
-    <string name="have_trouble_login_message">"Você quer tentar outra forma de autenticar?"</string>
     <string name="vote">"Votar"</string>
     <string name="action_share_link">"Compartilhar Link"</string>
     <string name="action_copy_link">"Copiar Link"</string>
@@ -1040,9 +1030,7 @@ A reprodução automática de vídeos fica desativada."</string>
 Ainda quer a ativar?"</string>
     <string name="reply">"Responder"</string>
     <string name="post_gallery_activity_label">"Postar galeria"</string>
-    <string name="trending_activity_label">"Tendências"</string>
     <string name="action_share_post_link">"Compartilhar link da postagem"</string>
-    <string name="trending">"Em alta"</string>
     <string name="receive_post_reply_notifications">"Receber notificações de respostas às postagens"</string>
     <string name="bottom_sheet_post_gallery">"Galeria"</string>
     <string name="posting_gallery">"Postando galeria"</string>
@@ -1206,7 +1194,6 @@ Toque para tentar de novo."</string>
     <string name="reddit_gallery_item_caption_hint">"Legenda (até 180 caracteres)"</string>
     <string name="reddit_gallery_item_url_hint">"URL"</string>
     <string name="user_agreement_dialog_title">"Acordo de Usuário"</string>
-    <string name="user_agreement_message">"Você deve concordar com o Acordo de Usuário do Reddit (%1$s) e com a Política de Privacidade do Infinity for Reddit (%2$s) antes da autenticação."</string>
     <string name="agree">"Concordar"</string>
     <string name="do_not_agree">"Discordar"</string>
     <string name="option_1_hint">"Opção 1 (exigida)"</string>

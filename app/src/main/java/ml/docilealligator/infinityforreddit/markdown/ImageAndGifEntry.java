@@ -42,17 +42,17 @@ import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
 import ml.docilealligator.infinityforreddit.utils.Utils;
 
 public class ImageAndGifEntry extends MarkwonAdapter.Entry<ImageAndGifBlock, ImageAndGifEntry.Holder> {
-    private BaseActivity baseActivity;
-    private RequestManager glide;
-    private SaveMemoryCenterInisdeDownsampleStrategy saveMemoryCenterInsideDownsampleStrategy;
-    private OnItemClickListener onItemClickListener;
+    private final BaseActivity baseActivity;
+    private final RequestManager glide;
+    private final SaveMemoryCenterInisdeDownsampleStrategy saveMemoryCenterInsideDownsampleStrategy;
+    private final OnItemClickListener onItemClickListener;
     private boolean dataSavingMode;
-    private boolean disableImagePreview;
+    private final boolean disableImagePreview;
     private boolean blurImage;
-    private int colorAccent;
-    private int primaryTextColor;
-    private int postContentColor;
-    private int linkColor;
+    private final int colorAccent;
+    private final int primaryTextColor;
+    private final int postContentColor;
+    private final int linkColor;
 
     public ImageAndGifEntry(BaseActivity baseActivity, RequestManager glide,
                             OnItemClickListener onItemClickListener) {
@@ -146,8 +146,8 @@ public class ImageAndGifEntry extends MarkwonAdapter.Entry<ImageAndGifBlock, Ima
             imageRequestBuilder
                     .apply(RequestOptions.bitmapTransform(
                             new MultiTransformation<>(
-                                    new BlurTransformation(50, 10),
-                                    new RoundedCornersTransformation(72, 0))))
+                                    new BlurTransformation(100, 4),
+                                    new RoundedCornersTransformation(8, 0))))
                     .into(holder.binding.imageViewMarkdownImageAndGifBlock);
         } else {
             imageRequestBuilder
