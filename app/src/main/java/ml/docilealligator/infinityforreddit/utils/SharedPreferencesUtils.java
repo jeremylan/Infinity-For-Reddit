@@ -256,6 +256,21 @@ public class SharedPreferencesUtils {
         return POST_DETAIL_FAB_LANDSCAPE_Y_BASE + display.getDisplayId();
     }
 
+    public static final String EMBEDDED_MEDIA_TYPE = "embedded_media_type";
+    public static final int EMBEDDED_MEDIA_ALL = 15;
+
+    public static boolean canShowImage(int embeddedMediaType) {
+        return embeddedMediaType == 15 || embeddedMediaType == 7 || embeddedMediaType == 6 || embeddedMediaType == 3;
+    }
+
+    public static boolean canShowGif(int embeddedMediaType) {
+        return embeddedMediaType == 15 || embeddedMediaType == 7 || embeddedMediaType == 5 || embeddedMediaType == 2;
+    }
+
+    public static boolean canShowEmote(int embeddedMediaType) {
+        return embeddedMediaType == 15 || embeddedMediaType == 6 || embeddedMediaType == 5 || embeddedMediaType == 1;
+    }
+
     public static final String DEFAULT_PREFERENCES_FILE = "ml.docilealligator.infinityforreddit_preferences";
     public static final String MAIN_PAGE_TABS_SHARED_PREFERENCES_FILE = "ml.docilealligator.infinityforreddit.main_page_tabs";
     public static final String MAIN_PAGE_TAB_COUNT = "_main_page_tab_count";
@@ -371,6 +386,8 @@ public class SharedPreferencesUtils {
 
     public static final String POST_HISTORY_SHARED_PREFERENCES_FILE = "ml.docilealligator.infinityforreddit.post_history";
     public static final String MARK_POSTS_AS_READ_BASE = "_mark_posts_as_read";
+    public static final String READ_POSTS_LIMIT_ENABLED = "_read_posts_limit_enabled";
+    public static final String READ_POSTS_LIMIT = "_read_posts_limit";
     public static final String MARK_POSTS_AS_READ_AFTER_VOTING_BASE = "_mark_posts_as_read_after_voting";
     public static final String MARK_POSTS_AS_READ_ON_SCROLL_BASE = "_mark_posts_as_read_on_scroll";
     public static final String HIDE_READ_POSTS_AUTOMATICALLY_BASE = "_hide_read_posts_automatically";

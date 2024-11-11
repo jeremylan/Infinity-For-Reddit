@@ -7,9 +7,9 @@ android {
     defaultConfig {
         applicationId "ml.docilealligator.infinityforreddit"
         minSdk 21
-        targetSdk 33
-        versionCode 175
-        versionName "7.2.8"
+        targetSdk 34
+        versionCode 186
+        versionName "7.4.0-beta3"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -57,7 +57,8 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        buildConfig = true
+        viewBinding = true
     }
     namespace 'ml.docilealligator.infinityforreddit'
 }
@@ -116,7 +117,7 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
 
     // Binding
-    compileOnly 'com.android.databinding:viewbinding:8.5.0'
+    compileOnly 'com.android.databinding:viewbinding:8.5.1'
 
     // Events
     def eventbusVersion = "3.3.1"
@@ -154,7 +155,7 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
     implementation 'jp.wasabeef:glide-transformations:4.3.0'
     implementation 'com.github.santalu:aspect-ratio-imageview:1.0.9'
-    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.28'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.29'
     def bivVersion = "1.8.1"
     implementation "com.github.piasy:BigImageViewer:$bivVersion"
     implementation "com.github.piasy:GlideImageLoader:$bivVersion"
@@ -173,7 +174,7 @@ dependencies {
     implementation 'me.saket:better-link-movement-method:2.2.0'
 
     // Animations
-    implementation 'com.airbnb.android:lottie:6.4.0'
+    implementation 'com.airbnb.android:lottie:6.4.1'
 
     // Loading ProgressBar
     implementation 'com.lsjwzh:materialloadingprogressbar:0.5.8-RELEASE'
@@ -196,6 +197,8 @@ dependencies {
     implementation 'com.otaliastudios:zoomlayout:1.9.0'
 
     implementation 'androidx.core:core-splashscreen:1.0.1'
+
+    implementation 'com.giphy.sdk:ui:2.3.15'
 
 
 /**** Builds and flavors ****/
