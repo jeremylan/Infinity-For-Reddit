@@ -48,7 +48,7 @@ public class APIUtils {
     public static final String AUTHORIZATION_BASE = "bearer ";
     public static final String USER_AGENT_KEY = "User-Agent";
     public static final String USER_AGENT = "Stormclient:" + BuildConfig.VERSION_NAME + "(by /u/sliverinverted)";
-
+    public static final String USERNAME_KEY = "username";
     public static final String GRANT_TYPE_KEY = "grant_type";
     public static final String GRANT_TYPE_REFRESH_TOKEN = "refresh_token";
     public static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
