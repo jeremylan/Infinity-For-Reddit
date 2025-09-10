@@ -232,7 +232,7 @@ private fun generateQRCode(baseActivity: BaseActivity, customThemeWrapper: Custo
         data, QrVectorOptions.Builder()
             .setLogo(
                 QrVectorLogo(
-                    drawable = ContextCompat.getDrawable(baseActivity, R.mipmap.ic_launcher_round),
+                    drawable = ContextCompat.getDrawable(baseActivity, R.mipmap.ic_launcher),
                     size = .3f,
                     padding = QrVectorLogoPadding.Natural(.1f),
                     shape = QrVectorLogoShape.Circle
