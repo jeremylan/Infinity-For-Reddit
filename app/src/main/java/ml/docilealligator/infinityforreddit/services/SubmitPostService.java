@@ -5,6 +5,7 @@ import android.app.job.JobInfo;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.os.PersistableBundle;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.core.app.NotificationChannelCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -62,6 +64,7 @@ import ml.docilealligator.infinityforreddit.post.SubmitPost;
 import ml.docilealligator.infinityforreddit.utils.APIUtils;
 import ml.docilealligator.infinityforreddit.utils.JSONUtils;
 import ml.docilealligator.infinityforreddit.utils.NotificationUtils;
+import ml.docilealligator.infinityforreddit.utils.Utils;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import retrofit2.Response;
@@ -251,9 +254,9 @@ public class SubmitPostService extends JobService {
                         flair, isSpoiler, isNSFW, receivePostReplyNotifications);
             } else if (postType == EXTRA_POST_TYPE_IMAGE) {
                 Uri mediaUri = Uri.parse(bundle.getString(EXTRA_MEDIA_URI));
-                submitImagePost(params, manager, randomNotificationIdOffset, newAuthenticatorOauthRetrofit, account,
-                        mediaUri, subredditName, title, bundle.getString(EXTRA_CONTENT), flair, isSpoiler, isNSFW,
-                        receivePostReplyNotifications);
+                submitImagePost(params, manager, randomNotificationIdOffset, newAuthenticatorOauthRetrofit,
+                        getContentResolver(), account, mediaUri, subredditName, title,
+                        bundle.getString(EXTRA_CONTENT), flair, isSpoiler, isNSFW, receivePostReplyNotifications);
             } else if (postType == EXTRA_POST_TYPE_VIDEO) {
                 Uri mediaUri = Uri.parse(bundle.getString(EXTRA_MEDIA_URI));
                 submitVideoPost(params, manager, randomNotificationIdOffset, newAuthenticatorOauthRetrofit, account,
@@ -291,6 +294,7 @@ public class SubmitPostService extends JobService {
                 .build();
     }
 
+    @WorkerThread
     private void submitTextOrLinkPost(JobParameters parameters, NotificationManagerCompat manager, int randomNotificationIdOffset,
                                       Retrofit newAuthenticatorOauthRetrofit, Account selectedAccount,
                                       String subredditName, String title, String content, @Nullable String url,
@@ -316,6 +320,7 @@ public class SubmitPostService extends JobService {
                 });
     }
 
+    @WorkerThread
     private void submitCrosspost(JobParameters parameters, NotificationManagerCompat manager, int randomNotificationIdOffset,
                                  Executor executor, Handler handler, Retrofit newAuthenticatorOauthRetrofit,
                                  Account selectedAccount, String subredditName,
@@ -340,51 +345,62 @@ public class SubmitPostService extends JobService {
                 });
     }
 
+    @WorkerThread
     private void submitImagePost(JobParameters parameters, NotificationManagerCompat manager, int randomNotificationIdOffset,
-                                 Retrofit newAuthenticatorOauthRetrofit, Account selectedAccount, Uri mediaUri,
-                                 String subredditName, String title, String content, Flair flair,
-                                 boolean isSpoiler, boolean isNSFW, boolean receivePostReplyNotifications) {
-        try {
-            Bitmap resource = Glide.with(this).asBitmap().load(mediaUri).submit().get();
-            SubmitPost.submitImagePost(mExecutor, handler, newAuthenticatorOauthRetrofit, mUploadMediaRetrofit,
-                    selectedAccount.getAccessToken(), subredditName, title, content, resource, flair, isSpoiler, isNSFW, receivePostReplyNotifications,
-                    new SubmitPost.SubmitPostListener() {
-                        @Override
-                        public void submitSuccessful(Post post) {
-                            handler.post(() -> {
-                                EventBus.getDefault().post(new SubmitImagePostEvent(true, null));
-                                Toast.makeText(SubmitPostService.this, R.string.image_is_processing, Toast.LENGTH_SHORT).show();
-                            });
+                                 Retrofit newAuthenticatorOauthRetrofit, ContentResolver contentResolver,
+                                 Account selectedAccount, Uri mediaUri, String subredditName, String title,
+                                 String content, Flair flair, boolean isSpoiler, boolean isNSFW,
+                                 boolean receivePostReplyNotifications) {
+        SubmitPost.submitImagePost(mExecutor, handler, newAuthenticatorOauthRetrofit, mUploadMediaRetrofit,
+                contentResolver, selectedAccount.getAccessToken(), subredditName, title, content, mediaUri,
+                flair, isSpoiler, isNSFW, receivePostReplyNotifications,
+                new SubmitPost.SubmitPostListener() {
+                    @Override
+                    public void submitSuccessful(Post post) {
+                        handler.post(() -> {
+                            EventBus.getDefault().post(new SubmitImagePostEvent(true, null));
+                            Toast.makeText(SubmitPostService.this, R.string.image_is_processing, Toast.LENGTH_SHORT).show();
+                        });
 
-                            stopJob(parameters, manager, randomNotificationIdOffset);
-                        }
+                        stopJob(parameters, manager, randomNotificationIdOffset);
+                    }
 
-                        @Override
-                        public void submitFailed(@Nullable String errorMessage) {
-                            handler.post(() -> EventBus.getDefault().post(new SubmitImagePostEvent(false, errorMessage)));
+                    @Override
+                    public void submitFailed(@Nullable String errorMessage) {
+                        handler.post(() -> EventBus.getDefault().post(new SubmitImagePostEvent(false, errorMessage)));
 
-                            stopJob(parameters, manager, randomNotificationIdOffset);
-                        }
-                    });
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            handler.post(() -> EventBus.getDefault().post(new SubmitImagePostEvent(false, getString(R.string.error_processing_image))));
-            stopJob(parameters, manager, randomNotificationIdOffset);
-        }
+                        stopJob(parameters, manager, randomNotificationIdOffset);
+                    }
+                });
     }
 
+    @WorkerThread
     private void submitVideoPost(JobParameters parameters, NotificationManagerCompat manager, int randomNotificationIdOffset,
                                  Retrofit newAuthenticatorOauthRetrofit, Account selectedAccount, Uri mediaUri,
                                  String subredditName, String title, String content, Flair flair,
                                  boolean isSpoiler, boolean isNSFW, boolean receivePostReplyNotifications) {
-        try {
-            InputStream in = getContentResolver().openInputStream(mediaUri);
+        try(InputStream in = getContentResolver().openInputStream(mediaUri)) {
+            if (in == null) {
+                handler.post(() -> EventBus.getDefault().post(new SubmitVideoOrGifPostEvent(false, false, getString(R.string.submit_video_or_gif_post_failed_cannot_access_file))));
+                return;
+            }
             String type = getContentResolver().getType(mediaUri);
+            File cacheDir = Utils.getCacheDir(this);
+            if (cacheDir == null) {
+                handler.post(() -> EventBus.getDefault().post(new SubmitVideoOrGifPostEvent(false, false, getString(R.string.submit_video_or_gif_post_failed_cannot_get_cache_directory))));
+                return;
+            }
             String cacheFilePath;
+            // The last path segment of a MediaStore document URI can contain characters
+            // (e.g. ':' in "video:57226") that are illegal on FAT/exFAT filesystems used by
+            // SD cards. Sanitize it so the cache file can actually be created.
+            String lastPathSegment = mediaUri.getLastPathSegment();
+            String fileName = lastPathSegment == null
+                    ? "video" : lastPathSegment.replaceAll("[^a-zA-Z0-9._-]", "_");
             if (type != null && type.contains("gif")) {
-                cacheFilePath = getExternalCacheDir() + "/" + mediaUri.getLastPathSegment() + ".gif";
+                cacheFilePath = cacheDir + "/" + fileName + ".gif";
             } else {
-                cacheFilePath = getExternalCacheDir() + "/" + mediaUri.getLastPathSegment() + ".mp4";
+                cacheFilePath = cacheDir + "/" + fileName + ".mp4";
             }
 
             copyFileToCache(in, cacheFilePath);
@@ -431,6 +447,7 @@ public class SubmitPostService extends JobService {
         }
     }
 
+    @WorkerThread
     private void submitGalleryPost(JobParameters parameters, NotificationManagerCompat manager, int randomNotificationIdOffset,
                                    Retrofit newAuthenticatorOauthRetrofit, Account selectedAccount, String payload) {
         try {
@@ -468,6 +485,7 @@ public class SubmitPostService extends JobService {
         }
     }
 
+    @WorkerThread
     private void submitPollPost(JobParameters parameters, NotificationManagerCompat manager, int randomNotificationIdOffset,
                                 Retrofit newAuthenticatorOauthRetrofit, Account selectedAccount, String payload) {
         try {
@@ -506,11 +524,12 @@ public class SubmitPostService extends JobService {
     }
 
     private static void copyFileToCache(InputStream fileInputStream, String destinationFilePath) throws IOException {
-        OutputStream out = new FileOutputStream(destinationFilePath);
-        byte[] buf = new byte[2048];
-        int len;
-        while ((len = fileInputStream.read(buf)) > 0) {
-            out.write(buf, 0, len);
+        try (OutputStream out = new FileOutputStream(destinationFilePath)) {
+            byte[] buf = new byte[2048];
+            int len;
+            while ((len = fileInputStream.read(buf)) > 0) {
+                out.write(buf, 0, len);
+            }
         }
     }
 

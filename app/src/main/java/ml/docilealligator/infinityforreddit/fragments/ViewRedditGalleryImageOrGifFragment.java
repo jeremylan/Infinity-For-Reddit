@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
@@ -57,7 +58,6 @@ import ml.docilealligator.infinityforreddit.BuildConfig;
 import ml.docilealligator.infinityforreddit.Infinity;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.SaveMemoryCenterInisdeDownsampleStrategy;
-import ml.docilealligator.infinityforreddit.SetAsWallpaperCallback;
 import ml.docilealligator.infinityforreddit.activities.ViewRedditGalleryActivity;
 import ml.docilealligator.infinityforreddit.asynctasks.SaveBitmapImageToFile;
 import ml.docilealligator.infinityforreddit.asynctasks.SaveGIFToFile;
@@ -70,6 +70,7 @@ import ml.docilealligator.infinityforreddit.post.Post;
 import ml.docilealligator.infinityforreddit.services.DownloadMediaService;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
 import ml.docilealligator.infinityforreddit.utils.Utils;
+import ml.docilealligator.infinityforreddit.viewmodels.ViewGalleryViewModel;
 
 public class ViewRedditGalleryImageOrGifFragment extends Fragment {
 
@@ -96,6 +97,7 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
     private boolean isFallback = false;
     private Handler handler;
     private FragmentViewRedditGalleryImageOrGifBinding binding;
+    ViewGalleryViewModel viewGalleryViewModel;
 
     public ViewRedditGalleryImageOrGifFragment() {
         // Required empty public constructor
@@ -194,7 +196,7 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
             }
         });
 
-        //loadImage();
+        loadImage();
 
         String caption = media.caption;
         String captionUrl = media.captionUrl;
@@ -301,6 +303,20 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
             binding.captionLayoutViewRedditGalleryImageOrGifFragment.setVisibility(View.GONE);
         }
 
+        viewGalleryViewModel = new ViewModelProvider(requireActivity()).get(ViewGalleryViewModel.class);
+        viewGalleryViewModel.getInsets().observe(getViewLifecycleOwner(), insets -> {
+            ViewGroup.LayoutParams lp = binding.bottomNavigationViewRedditGalleryImageOrGifFragment.getLayoutParams();
+            if (lp instanceof ViewGroup.MarginLayoutParams) {
+                ViewGroup.MarginLayoutParams marginParams = (ViewGroup.MarginLayoutParams) lp;
+
+                marginParams.bottomMargin = insets.bottom;
+                marginParams.setMarginStart(insets.left);
+                marginParams.setMarginEnd(insets.right);
+
+                binding.bottomNavigationViewRedditGalleryImageOrGifFragment.setLayoutParams(marginParams);
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -405,9 +421,10 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
         glide.asBitmap().load(media.hasFallback() ? media.fallbackUrl : media.url).into(new CustomTarget<Bitmap>() {
             @Override
             public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                if (activity.getExternalCacheDir() != null) {
+                File cacheDir = Utils.getCacheDir(activity);
+                if (cacheDir != null) {
                     Toast.makeText(activity, R.string.save_image_first, Toast.LENGTH_SHORT).show();
-                    SaveBitmapImageToFile.SaveBitmapImageToFile(mExecutor, handler, resource, activity.getExternalCacheDir().getPath(),
+                    SaveBitmapImageToFile.saveBitmapImageToFile(mExecutor, handler, resource, cacheDir.getPath(),
                             media.fileName,
                             new SaveBitmapImageToFile.SaveBitmapImageToFileListener() {
                                 @Override
@@ -451,8 +468,9 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
 
             @Override
             public boolean onResourceReady(GifDrawable resource, Object model, Target<GifDrawable> target, DataSource dataSource, boolean isFirstResource) {
-                if (activity.getExternalCacheDir() != null) {
-                    SaveGIFToFile.saveGifToFile(mExecutor, handler, resource, activity.getExternalCacheDir().getPath(), media.fileName,
+                File cacheDir = Utils.getCacheDir(activity);
+                if (cacheDir != null) {
+                    SaveGIFToFile.saveGifToFile(mExecutor, handler, resource, cacheDir.getPath(), media.fileName,
                             new SaveGIFToFile.SaveGIFToFileListener() {
                                 @Override
                                 public void saveSuccess(File imageFile) {
@@ -490,7 +508,7 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
                 setAsWallpaperBottomSheetFragment.setArguments(bundle);
                 setAsWallpaperBottomSheetFragment.show(activity.getSupportFragmentManager(), setAsWallpaperBottomSheetFragment.getTag());
             } else {
-                ((SetAsWallpaperCallback) activity).setToBoth(activity.getCurrentPagePosition());
+                activity.setToBoth(activity.getCurrentPagePosition());
             }
         }
     }
@@ -535,23 +553,13 @@ public class ViewRedditGalleryImageOrGifFragment extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroyView() {
+        super.onDestroyView();
         binding.imageViewViewRedditGalleryImageOrGifFragment.cancel();
+        isFallback = false;
         SubsamplingScaleImageView subsamplingScaleImageView = binding.imageViewViewRedditGalleryImageOrGifFragment.getSSIV();
         if (subsamplingScaleImageView != null) {
             subsamplingScaleImageView.recycle();
         }
     }
-
-//    @Override
-//    public void onDestroyView() {
-//        super.onDestroyView();
-//        binding.imageViewViewRedditGalleryImageOrGifFragment.cancel();
-//        isFallback = false;
-//        SubsamplingScaleImageView subsamplingScaleImageView = binding.imageViewViewRedditGalleryImageOrGifFragment.getSSIV();
-//        if (subsamplingScaleImageView != null) {
-//            subsamplingScaleImageView.recycle();
-//        }
-//    }
 }

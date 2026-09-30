@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
@@ -48,7 +47,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -140,7 +138,7 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
     private boolean isSpoiler = false;
     private boolean isNSFW = false;
     private Resources resources;
-    private Menu mMemu;
+    private Menu mMenu;
     private RequestManager mGlide;
     private FlairBottomSheetFragment flairSelectionBottomSheetFragment;
     private Snackbar mPostingSnackbar;
@@ -163,7 +161,7 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
 
         applyCustomTheme();
 
-        if (isImmersiveInterface()) {
+        if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
             if (isChangeStatusBarIconColor()) {
                 addOnOffsetChangedListener(binding.appbarLayoutPostGalleryActivity);
             }
@@ -172,11 +170,7 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
                 @NonNull
                 @Override
                 public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                    Insets allInsets = insets.getInsets(
-                            WindowInsetsCompat.Type.systemBars()
-                                    | WindowInsetsCompat.Type.displayCutout()
-                                    | WindowInsetsCompat.Type.ime()
-                    );
+                    Insets allInsets = Utils.getInsets(insets, true, isForcedImmersiveInterface());
 
                     setMargins(binding.toolbarPostGalleryActivity,
                             allInsets.left,
@@ -521,18 +515,11 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
         isUploading = true;
         mExecutor.execute(() -> {
             try {
-                Bitmap resource = Glide.with(PostGalleryActivity.this).asBitmap().load(imageUri).submit().get();
-                String response = UploadImageUtils.uploadImage(mOauthRetrofit, mUploadMediaRetrofit, accessToken, resource, true, false);
+                String response = UploadImageUtils.uploadImage(mOauthRetrofit, mUploadMediaRetrofit, getContentResolver(),
+                        accessToken, imageUri, true, false);
                 String mediaId = new JSONObject(response).getJSONObject(JSONUtils.ASSET_KEY).getString(JSONUtils.ASSET_ID_KEY);
                 handler.post(() -> {
                     adapter.setImageAsUploaded(mediaId);
-                    isUploading = false;
-                });
-            } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
-                handler.post(() -> {
-                    adapter.removeFailedToUploadImage();
-                    Snackbar.make(binding.coordinatorLayoutPostGalleryActivity, R.string.get_image_bitmap_failed, Snackbar.LENGTH_LONG).show();
                     isUploading = false;
                 });
             } catch (XmlPullParserException | JSONException | IOException e) {
@@ -583,10 +570,10 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.post_gallery_activity, menu);
         applyMenuItemTheme(menu);
-        mMemu = menu;
+        mMenu = menu;
         if (isPosting) {
-            mMemu.findItem(R.id.action_send_post_gallery_activity).setEnabled(false);
-            mMemu.findItem(R.id.action_send_post_gallery_activity).getIcon().setAlpha(130);
+            mMenu.findItem(R.id.action_send_post_gallery_activity).setEnabled(false);
+            mMenu.findItem(R.id.action_send_post_gallery_activity).getIcon().setAlpha(130);
         }
         return true;
     }
@@ -781,8 +768,8 @@ public class PostGalleryActivity extends BaseActivity implements FlairBottomShee
             startActivity(intent);
             finish();
         } else {
-            mMemu.findItem(R.id.action_send_post_gallery_activity).setEnabled(true);
-            mMemu.findItem(R.id.action_send_post_gallery_activity).getIcon().setAlpha(255);
+            mMenu.findItem(R.id.action_send_post_gallery_activity).setEnabled(true);
+            mMenu.findItem(R.id.action_send_post_gallery_activity).getIcon().setAlpha(255);
             if (submitGalleryPostEvent.errorMessage == null || submitGalleryPostEvent.errorMessage.isEmpty()) {
                 Snackbar.make(binding.coordinatorLayoutPostGalleryActivity, R.string.post_failed, Snackbar.LENGTH_SHORT).show();
             } else {

@@ -15,7 +15,9 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 import ml.docilealligator.infinityforreddit.apis.StreamableAPI;
+import ml.docilealligator.infinityforreddit.apis.StreamableAPIKt;
 import ml.docilealligator.infinityforreddit.network.AccessTokenAuthenticator;
+import ml.docilealligator.infinityforreddit.network.AnonymousAccessTokenInterceptor;
 import ml.docilealligator.infinityforreddit.network.RedgifsAccessTokenAuthenticator;
 import ml.docilealligator.infinityforreddit.network.ServerAccessTokenAuthenticator;
 import ml.docilealligator.infinityforreddit.network.SortTypeConverterFactory;
@@ -59,12 +61,14 @@ abstract class NetworkModule {
 
         if (proxyEnabled) {
             Proxy.Type proxyType = Proxy.Type.valueOf(mProxySharedPreferences.getString(SharedPreferencesUtils.PROXY_TYPE, "HTTP"));
-            String proxyHost = mProxySharedPreferences.getString(SharedPreferencesUtils.PROXY_HOSTNAME, "127.0.0.1");
-            int proxyPort = Integer.parseInt(mProxySharedPreferences.getString(SharedPreferencesUtils.PROXY_PORT, "1080"));
+            if (proxyType != Proxy.Type.DIRECT) {
+                String proxyHost = mProxySharedPreferences.getString(SharedPreferencesUtils.PROXY_HOSTNAME, "127.0.0.1");
+                int proxyPort = Integer.parseInt(mProxySharedPreferences.getString(SharedPreferencesUtils.PROXY_PORT, "1080"));
 
-            InetSocketAddress proxyAddr = new InetSocketAddress(proxyHost, proxyPort);
-            Proxy proxy = new Proxy(proxyType, proxyAddr);
-            builder.proxy(proxy);
+                InetSocketAddress proxyAddr = InetSocketAddress.createUnresolved(proxyHost, proxyPort);
+                Proxy proxy = new Proxy(proxyType, proxyAddr);
+                builder.proxy(proxy);
+            }
         }
 
         return builder.build();
@@ -90,8 +94,10 @@ abstract class NetworkModule {
 
     @Provides
     @Named("no_oauth")
-    static Retrofit provideRetrofit(@Named("base") Retrofit retrofit) {
-        return retrofit;
+    static Retrofit provideRetrofit(@Named("base") Retrofit retrofit, @Named("anonymous") OkHttpClient okHttpClient) {
+        return retrofit.newBuilder()
+                .client(okHttpClient)
+                .build();
     }
 
     @Provides
@@ -101,6 +107,22 @@ abstract class NetworkModule {
         return retrofit.newBuilder()
                 .baseUrl(APIUtils.OAUTH_API_BASE_URI)
                 .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    @Named("anonymous")
+    @Singleton
+    static OkHttpClient provideCookieOkHttpClient(@Named("base") OkHttpClient httpClient,
+                                            @Named("base") Retrofit retrofit,
+                                            RedditDataRoomDatabase redditDataRoomDatabase,
+                                            ConnectionPool connectionPool) {
+        AnonymousAccessTokenInterceptor anonymousAccessTokenInterceptor
+                = new AnonymousAccessTokenInterceptor(retrofit, redditDataRoomDatabase);
+
+        return httpClient.newBuilder()
+                .addInterceptor(anonymousAccessTokenInterceptor)
+                .connectionPool(connectionPool)
                 .build();
     }
 
@@ -215,7 +237,7 @@ abstract class NetworkModule {
         return new RedgifsAccessTokenAuthenticator(currentAccountSharedPreferences);
     }
 
-    /*@Provides
+    @Provides
     @Named("redgifs")
     @Singleton
     static Retrofit provideRedgifsRetrofit(@Named("RedgifsAccessTokenAuthenticator") Interceptor accessTokenAuthenticator,
@@ -236,16 +258,16 @@ abstract class NetworkModule {
                 .baseUrl(APIUtils.REDGIFS_API_BASE_URI)
                 .client(okHttpClientBuilder.build())
                 .build();
-    }*/
+    }
 
-    @Provides
+    /*@Provides
     @Named("redgifs")
     @Singleton
     static Retrofit provideRedgifsRetrofit(@Named("base") Retrofit retrofit) {
         return retrofit.newBuilder()
                 .baseUrl(APIUtils.OH_MY_DL_BASE_URI)
                 .build();
-    }
+    }*/
 
     @Provides
     @Named("imgur")
@@ -288,5 +310,11 @@ abstract class NetworkModule {
     @Singleton
     static StreamableAPI provideStreamableApi(@Named("streamable") Retrofit streamableRetrofit) {
         return streamableRetrofit.create(StreamableAPI.class);
+    }
+
+    @Provides
+    @Singleton
+    static StreamableAPIKt provideStreamableApiKt(@Named("streamable") Retrofit streamableRetrofit) {
+        return streamableRetrofit.create(StreamableAPIKt.class);
     }
 }

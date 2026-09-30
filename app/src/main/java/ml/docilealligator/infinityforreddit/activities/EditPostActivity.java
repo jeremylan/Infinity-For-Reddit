@@ -107,7 +107,7 @@ public class EditPostActivity extends BaseActivity implements UploadImageEnabled
 
         applyCustomTheme();
 
-        if (isImmersiveInterface()) {
+        if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
             if (isChangeStatusBarIconColor()) {
                 addOnOffsetChangedListener(binding.appbarLayoutEditPostActivity);
             }
@@ -116,11 +116,7 @@ public class EditPostActivity extends BaseActivity implements UploadImageEnabled
                 @NonNull
                 @Override
                 public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                    Insets allInsets = insets.getInsets(
-                            WindowInsetsCompat.Type.systemBars()
-                                    | WindowInsetsCompat.Type.displayCutout()
-                                    | WindowInsetsCompat.Type.ime()
-                    );
+                    Insets allInsets = Utils.getInsets(insets, true, isForcedImmersiveInterface());
 
                     setMargins(binding.toolbarEditPostActivity,
                             allInsets.left,
@@ -300,10 +296,12 @@ public class EditPostActivity extends BaseActivity implements UploadImageEnabled
                     return;
                 }
                 Utils.uploadImageToReddit(this, mExecutor, mOauthRetrofit, mUploadMediaRetrofit,
-                        mAccessToken, binding.postContentEditTextEditPostActivity, binding.coordinatorLayoutEditPostActivity, data.getData(), uploadedImages);
+                        mAccessToken, binding.postContentEditTextEditPostActivity,
+                        binding.coordinatorLayoutEditPostActivity, data.getData(), uploadedImages);
             } else if (requestCode == CAPTURE_IMAGE_REQUEST_CODE) {
                 Utils.uploadImageToReddit(this, mExecutor, mOauthRetrofit, mUploadMediaRetrofit,
-                        mAccessToken, binding.postContentEditTextEditPostActivity, binding.coordinatorLayoutEditPostActivity, capturedImageUri, uploadedImages);
+                        mAccessToken, binding.postContentEditTextEditPostActivity,
+                        binding.coordinatorLayoutEditPostActivity, capturedImageUri, uploadedImages);
             } else if (requestCode == MARKDOWN_PREVIEW_REQUEST_CODE) {
                 editPost();
             }

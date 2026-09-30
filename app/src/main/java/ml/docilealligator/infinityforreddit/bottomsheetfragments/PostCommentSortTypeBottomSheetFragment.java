@@ -10,15 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.Fragment;
 
 import ml.docilealligator.infinityforreddit.R;
-import ml.docilealligator.infinityforreddit.thing.SortType;
-import ml.docilealligator.infinityforreddit.thing.SortTypeSelectionCallback;
 import ml.docilealligator.infinityforreddit.activities.BaseActivity;
 import ml.docilealligator.infinityforreddit.customviews.LandscapeExpandedRoundedBottomSheetDialogFragment;
 import ml.docilealligator.infinityforreddit.databinding.FragmentPostCommentSortTypeBottomSheetBinding;
+import ml.docilealligator.infinityforreddit.thing.SortType;
+import ml.docilealligator.infinityforreddit.thing.SortTypeSelectionCallback;
 import ml.docilealligator.infinityforreddit.utils.Utils;
 
 /**
@@ -34,7 +35,7 @@ public class PostCommentSortTypeBottomSheetFragment extends LandscapeExpandedRou
         // Required empty public constructor
     }
 
-    public static PostCommentSortTypeBottomSheetFragment getNewInstance(SortType.Type currentSortType) {
+    public static PostCommentSortTypeBottomSheetFragment getNewInstance(@Nullable SortType.Type currentSortType) {
         PostCommentSortTypeBottomSheetFragment fragment = new PostCommentSortTypeBottomSheetFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(EXTRA_CURRENT_SORT_TYPE, currentSortType);
@@ -50,22 +51,24 @@ public class PostCommentSortTypeBottomSheetFragment extends LandscapeExpandedRou
         FragmentPostCommentSortTypeBottomSheetBinding binding = FragmentPostCommentSortTypeBottomSheetBinding.inflate(inflater, container, false);
 
         SortType.Type currentSortType = (SortType.Type) getArguments().getSerializable(EXTRA_CURRENT_SORT_TYPE);
-        if (currentSortType.equals(SortType.Type.BEST) || currentSortType.equals(SortType.Type.CONFIDENCE)) {
-            binding.bestTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.bestTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
-        } else if (currentSortType.equals(SortType.Type.TOP)) {
-            binding.topTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.topTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
-        } else if (currentSortType.equals(SortType.Type.NEW)) {
-            binding.newTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.newTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
-        } else if (currentSortType.equals(SortType.Type.CONTROVERSIAL)) {
-            binding.controversialTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.controversialTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
-        } else if (currentSortType.equals(SortType.Type.OLD)) {
-            binding.oldTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.oldTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
-        } else if (currentSortType.equals(SortType.Type.RANDOM)) {
-            binding.randomTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.randomTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
-        } else if (currentSortType.equals(SortType.Type.QA)) {
-            binding.qaTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.qaTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
-        } else if (currentSortType.equals(SortType.Type.LIVE)) {
-            binding.liveTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.liveTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+        if (currentSortType != null) {
+            if (currentSortType.equals(SortType.Type.BEST) || currentSortType.equals(SortType.Type.CONFIDENCE)) {
+                binding.bestTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.bestTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            } else if (currentSortType.equals(SortType.Type.TOP)) {
+                binding.topTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.topTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            } else if (currentSortType.equals(SortType.Type.NEW)) {
+                binding.newTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.newTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            } else if (currentSortType.equals(SortType.Type.CONTROVERSIAL)) {
+                binding.controversialTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.controversialTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            } else if (currentSortType.equals(SortType.Type.OLD)) {
+                binding.oldTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.oldTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            } else if (currentSortType.equals(SortType.Type.RANDOM)) {
+                binding.randomTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.randomTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            } else if (currentSortType.equals(SortType.Type.QA)) {
+                binding.qaTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.qaTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            } else if (currentSortType.equals(SortType.Type.LIVE)) {
+                binding.liveTypeTextViewPostCommentSortTypeBottomSheetFragment.setCompoundDrawablesRelativeWithIntrinsicBounds(binding.liveTypeTextViewPostCommentSortTypeBottomSheetFragment.getCompoundDrawablesRelative()[0], null, AppCompatResources.getDrawable(activity, R.drawable.ic_check_circle_day_night_24dp), null);
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
