@@ -32,6 +32,7 @@ import ml.docilealligator.infinityforreddit.BuildConfig;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.RedditDataRoomDatabase;
 import ml.docilealligator.infinityforreddit.account.Account;
+import ml.docilealligator.infinityforreddit.comment.CommentDraft;
 import ml.docilealligator.infinityforreddit.commentfilter.CommentFilter;
 import ml.docilealligator.infinityforreddit.commentfilter.CommentFilterUsage;
 import ml.docilealligator.infinityforreddit.customtheme.CustomTheme;
@@ -39,10 +40,13 @@ import ml.docilealligator.infinityforreddit.multireddit.AnonymousMultiredditSubr
 import ml.docilealligator.infinityforreddit.multireddit.MultiReddit;
 import ml.docilealligator.infinityforreddit.postfilter.PostFilter;
 import ml.docilealligator.infinityforreddit.postfilter.PostFilterUsage;
+import ml.docilealligator.infinityforreddit.readpost.ReadPost;
+import ml.docilealligator.infinityforreddit.reminder.Reminder;
 import ml.docilealligator.infinityforreddit.subscribedsubreddit.SubscribedSubredditData;
 import ml.docilealligator.infinityforreddit.subscribeduser.SubscribedUserData;
 import ml.docilealligator.infinityforreddit.utils.CustomThemeSharedPreferencesUtils;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
+import ml.docilealligator.infinityforreddit.utils.Utils;
 
 public class BackupSettings {
     public static void backupSettings(Context context, Executor executor, Handler handler,
@@ -61,7 +65,13 @@ public class BackupSettings {
                                       SharedPreferences postHistorySharedPreferences,
                                       BackupSettingsListener backupSettingsListener) {
         executor.execute(() -> {
-            String backupDir = context.getExternalCacheDir() + "/Backup/" + BuildConfig.VERSION_NAME;
+            File cacheDir = Utils.getCacheDir(context);
+            if (cacheDir == null) {
+                handler.post(() -> backupSettingsListener.failed(context.getText(R.string.restore_settings_failed_cannot_get_cache_dir).toString()));
+                return;
+            }
+
+            String backupDir = cacheDir + "/Backup/" + BuildConfig.VERSION_NAME;
             File backupDirFile = new File(backupDir);
             if (new File(backupDir).exists()) {
                 try {
@@ -134,10 +144,22 @@ public class BackupSettings {
             String commentFilterUsageJson = new Gson().toJson(commentFilterUsage);
             boolean res19 = saveDatabaseTableToFile(commentFilterUsageJson, databaseDirFile.getAbsolutePath(), "/comment_filter_usage.json");
 
-            boolean zipRes = zipAndMoveToDestinationDir(context, contentResolver, destinationDirUri);
+            List<CommentDraft> commentDrafts = redditDataRoomDatabase.commentDraftDao().getCommentDraftsForBackup();
+            String commentDraftsJson = new Gson().toJson(commentDrafts);
+            boolean res20 = saveDatabaseTableToFile(commentDraftsJson, databaseDirFile.getAbsolutePath(), "/comment_drafts.json");
+
+            List<ReadPost> readPosts = redditDataRoomDatabase.readPostDao().getAllReadPostsForBackup();
+            String readPostsJson = new Gson().toJson(readPosts);
+            boolean res21 = saveDatabaseTableToFile(readPostsJson, databaseDirFile.getAbsolutePath(), "/read_posts.json");
+
+            List<Reminder> reminders = redditDataRoomDatabase.reminderDao().getAllRemindersForBackup();
+            String remindersJson = new Gson().toJson(reminders);
+            boolean res22 = saveDatabaseTableToFile(remindersJson, databaseDirFile.getAbsolutePath(), "/reminders.json");
+
+            boolean zipRes = zipAndMoveToDestinationDir(context, cacheDir, contentResolver, destinationDirUri);
 
             try {
-                FileUtils.deleteDirectory(new File(context.getExternalCacheDir() + "/Backup/"));
+                FileUtils.deleteDirectory(new File(cacheDir + "/Backup/"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -145,7 +167,7 @@ public class BackupSettings {
             handler.post(() -> {
                 boolean finalResult = res && res1 && res2 && res3 && res4 && res5 && res6 && res7 && res8
                         && res9 && res10 && res11 && res12 && res13 && res14 && res15 && res16 && res17
-                        && res18 && res19 && zipRes;
+                        && res18 && res19 && res20 && res21 && res22 && zipRes;
                 if (finalResult) {
                     backupSettingsListener.success();
                 } else {
@@ -198,18 +220,16 @@ public class BackupSettings {
         return true;
     }
 
-    private static boolean zipAndMoveToDestinationDir(Context context, ContentResolver contentResolver, Uri destinationDirUri) {
-        OutputStream outputStream = null;
+    private static boolean zipAndMoveToDestinationDir(Context context, File cacheDir, ContentResolver contentResolver, Uri destinationDirUri) {
         boolean result = false;
-        try {
-            String time = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(System.currentTimeMillis()));
-            String fileName = "Infinity_For_Reddit_Settings_Backup_v" + BuildConfig.VERSION_NAME + "-" + BuildConfig.VERSION_CODE + "-" + time + ".zip";
-            String filePath = context.getExternalCacheDir() + "/Backup/" + fileName;
-            ZipFile zip = new ZipFile(filePath, "123321".toCharArray());
+        String time = new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date(System.currentTimeMillis()));
+        String fileName = "Infinity_For_Reddit_Settings_Backup_v" + BuildConfig.VERSION_NAME + "-" + BuildConfig.VERSION_CODE + "-" + time + ".zip";
+        String filePath = cacheDir + "/Backup/" + fileName;
+        try (ZipFile zip = new ZipFile(filePath, "123321".toCharArray())) {
             ZipParameters zipParameters = new ZipParameters();
             zipParameters.setEncryptFiles(true);
             zipParameters.setEncryptionMethod(EncryptionMethod.AES);
-            zip.addFolder(new File(context.getExternalCacheDir() + "/Backup/" + BuildConfig.VERSION_NAME + "/"), zipParameters);
+            zip.addFolder(new File(cacheDir + "/Backup/" + BuildConfig.VERSION_NAME + "/"), zipParameters);
 
             DocumentFile dir = DocumentFile.fromTreeUri(context, destinationDirUri);
             if (dir == null) {
@@ -224,35 +244,28 @@ public class BackupSettings {
                 return false;
             }
 
-            outputStream = contentResolver.openOutputStream(destinationFile.getUri());
-            if (outputStream == null) {
-                return false;
-            }
-
-            byte[] fileReader = new byte[1024];
-
-            FileInputStream inputStream = new FileInputStream(filePath);
-            while (true) {
-                int read = inputStream.read(fileReader);
-
-                if (read == -1) {
-                    break;
+            try (OutputStream outputStream = contentResolver.openOutputStream(destinationFile.getUri());
+                 FileInputStream inputStream = new FileInputStream(filePath)) {
+                if (outputStream == null) {
+                    return false;
                 }
 
-                outputStream.write(fileReader, 0, read);
+                byte[] fileReader = new byte[1024];
+
+
+                while (true) {
+                    int read = inputStream.read(fileReader);
+
+                    if (read == -1) {
+                        break;
+                    }
+
+                    outputStream.write(fileReader, 0, read);
+                }
+                result = true;
             }
-            result = true;
         } catch (IOException e) {
             e.printStackTrace();
-
-        } finally {
-            if (outputStream != null) {
-                try {
-                    outputStream.flush();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return result;

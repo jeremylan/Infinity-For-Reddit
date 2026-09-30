@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewGroupCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -32,17 +33,20 @@ import ml.docilealligator.infinityforreddit.Infinity;
 import ml.docilealligator.infinityforreddit.R;
 import ml.docilealligator.infinityforreddit.bottomsheetfragments.PostLayoutBottomSheetFragment;
 import ml.docilealligator.infinityforreddit.customtheme.CustomThemeWrapper;
-import ml.docilealligator.infinityforreddit.customviews.slidr.Slidr;
 import ml.docilealligator.infinityforreddit.databinding.ActivityHistoryBinding;
 import ml.docilealligator.infinityforreddit.events.ChangeNSFWEvent;
 import ml.docilealligator.infinityforreddit.events.SwitchAccountEvent;
 import ml.docilealligator.infinityforreddit.fragments.CommentsListingFragment;
 import ml.docilealligator.infinityforreddit.fragments.HistoryPostFragment;
 import ml.docilealligator.infinityforreddit.fragments.PostFragment;
+import ml.docilealligator.infinityforreddit.readpost.ReadPostType;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
+import ml.docilealligator.infinityforreddit.utils.Utils;
 
 public class HistoryActivity extends BaseActivity implements ActivityToolbarInterface,
         PostLayoutBottomSheetFragment.PostLayoutSelectionCallback {
+
+    public static final String EXTRA_READ_POST_TYPE = "EHT";
 
     @Inject
     @Named("default")
@@ -55,6 +59,8 @@ public class HistoryActivity extends BaseActivity implements ActivityToolbarInte
     SharedPreferences mCurrentAccountSharedPreferences;
     @Inject
     CustomThemeWrapper mCustomThemeWrapper;
+    @ReadPostType
+    private int readPostType;
     private FragmentManager fragmentManager;
     private SectionsPagerAdapter sectionsPagerAdapter;
     private ActivityHistoryBinding binding;
@@ -72,9 +78,7 @@ public class HistoryActivity extends BaseActivity implements ActivityToolbarInte
 
         applyCustomTheme();
 
-        if (mSharedPreferences.getBoolean(SharedPreferencesUtils.SWIPE_RIGHT_TO_GO_BACK, true)) {
-            mSliderPanel = Slidr.attach(this);
-        }
+        attachSliderPanelIfApplicable();
 
         mViewPager2 = binding.viewPagerHistoryActivity;
 
@@ -85,21 +89,19 @@ public class HistoryActivity extends BaseActivity implements ActivityToolbarInte
                 addOnOffsetChangedListener(binding.appbarLayoutHistoryActivity);
             }
 
-            if (isImmersiveInterface()) {
+            if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     window.setDecorFitsSystemWindows(false);
                 } else {
                     window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
                 }
 
+                ViewGroupCompat.installCompatInsetsDispatch(binding.getRoot());
                 ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), new OnApplyWindowInsetsListener() {
                     @NonNull
                     @Override
                     public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                        Insets allInsets = insets.getInsets(
-                                WindowInsetsCompat.Type.systemBars()
-                                        | WindowInsetsCompat.Type.displayCutout()
-                        );
+                        Insets allInsets = Utils.getInsets(insets, false, isForcedImmersiveInterface());
 
                         setMargins(binding.toolbarHistoryActivity,
                                 allInsets.left,
@@ -107,9 +109,9 @@ public class HistoryActivity extends BaseActivity implements ActivityToolbarInte
                                 allInsets.right,
                                 BaseActivity.IGNORE_MARGIN);
 
-                        binding.viewPagerHistoryActivity.setPadding(allInsets.left, 0, allInsets.right, allInsets.bottom);
+                        binding.viewPagerHistoryActivity.setPadding(allInsets.left, 0, allInsets.right, 0);
 
-                        return WindowInsetsCompat.CONSUMED;
+                        return insets;
                     }
                 });
                 //adjustToolbar(binding.toolbarHistoryActivity);
@@ -119,6 +121,26 @@ public class HistoryActivity extends BaseActivity implements ActivityToolbarInte
         setSupportActionBar(binding.toolbarHistoryActivity);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setToolbarGoToTop(binding.toolbarHistoryActivity);
+
+        readPostType = getIntent().getIntExtra(EXTRA_READ_POST_TYPE, ReadPostType.READ_POSTS);
+        switch (readPostType) {
+            case ReadPostType.READ_POSTS:
+                setTitle(R.string.history_activity_read_posts_label);
+                break;
+            case ReadPostType.ANONYMOUS_UPVOTED_POSTS:
+                setTitle(R.string.upvoted);
+                break;
+            case ReadPostType.ANONYMOUS_DOWNVOTED_POSTS:
+                setTitle(R.string.downvoted);
+                break;
+            case ReadPostType.ANONYMOUS_HIDDEN_POSTS:
+                setTitle(R.string.hidden);
+                break;
+            case ReadPostType.ANONYMOUS_SAVED_POSTS:
+                setTitle(R.string.saved);
+                break;
+        }
+        binding.toolbarHistoryActivity.setSubtitle(R.string.history_activity_subtitle);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -154,6 +176,7 @@ public class HistoryActivity extends BaseActivity implements ActivityToolbarInte
         binding.getRoot().setBackgroundColor(mCustomThemeWrapper.getBackgroundColor());
         applyAppBarLayoutAndCollapsingToolbarLayoutAndToolbarTheme(binding.appbarLayoutHistoryActivity,
                 binding.collapsingToolbarLayoutHistoryActivity, binding.toolbarHistoryActivity);
+        applyAppBarScrollFlagsIfApplicable(binding.collapsingToolbarLayoutHistoryActivity);
         applyTabLayoutTheme(binding.tabLayoutTabLayoutHistoryActivityActivity);
     }
 
@@ -263,19 +286,11 @@ public class HistoryActivity extends BaseActivity implements ActivityToolbarInte
         @NonNull
         @Override
         public Fragment createFragment(int position) {
-            if (position == 0) {
-                HistoryPostFragment fragment = new HistoryPostFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt(HistoryPostFragment.EXTRA_HISTORY_TYPE, HistoryPostFragment.HISTORY_TYPE_READ_POSTS);
-                fragment.setArguments(bundle);
-                return fragment;
-            } else {
-                HistoryPostFragment fragment = new HistoryPostFragment();
-                Bundle bundle = new Bundle();
-                bundle.putInt(HistoryPostFragment.EXTRA_HISTORY_TYPE, HistoryPostFragment.HISTORY_TYPE_READ_POSTS);
-                fragment.setArguments(bundle);
-                return fragment;
-            }
+            HistoryPostFragment fragment = new HistoryPostFragment();
+            Bundle bundle = new Bundle();
+            bundle.putInt(HistoryPostFragment.EXTRA_READ_POST_TYPE, readPostType);
+            fragment.setArguments(bundle);
+            return fragment;
         }
 
         @Nullable

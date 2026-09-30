@@ -86,7 +86,7 @@ public class EditProfileActivity extends BaseActivity {
 
         applyCustomTheme();
 
-        if (isImmersiveInterface()) {
+        if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
             if (isChangeStatusBarIconColor()) {
                 addOnOffsetChangedListener(binding.appbarLayoutViewEditProfileActivity);
             }
@@ -95,10 +95,7 @@ public class EditProfileActivity extends BaseActivity {
                 @NonNull
                 @Override
                 public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                    Insets allInsets = insets.getInsets(
-                            WindowInsetsCompat.Type.systemBars()
-                                    | WindowInsetsCompat.Type.displayCutout()
-                    );
+                    Insets allInsets = Utils.getInsets(insets, true, isForcedImmersiveInterface());
 
                     setMargins(binding.toolbarViewEditProfileActivity,
                             allInsets.left,
@@ -376,7 +373,9 @@ public class EditProfileActivity extends BaseActivity {
 
     @Override
     protected void applyCustomTheme() {
-        applyAppBarLayoutAndCollapsingToolbarLayoutAndToolbarTheme(binding.appbarLayoutViewEditProfileActivity, binding.collapsingToolbarLayoutEditProfileActivity, binding.toolbarViewEditProfileActivity);
+        applyAppBarLayoutAndCollapsingToolbarLayoutAndToolbarTheme(binding.appbarLayoutViewEditProfileActivity,
+                binding.collapsingToolbarLayoutEditProfileActivity, binding.toolbarViewEditProfileActivity);
+        applyAppBarScrollFlagsIfApplicable(binding.collapsingToolbarLayoutEditProfileActivity);
         binding.rootLayoutViewEditProfileActivity.setBackgroundColor(mCustomThemeWrapper.getBackgroundColor());
         changeColorTextView(binding.contentViewEditProfileActivity, mCustomThemeWrapper.getPrimaryTextColor());
         if (typeface != null) {

@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.core.graphics.Insets;
 import androidx.core.view.OnApplyWindowInsetsListener;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewGroupCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -45,7 +46,6 @@ import ml.docilealligator.infinityforreddit.account.Account;
 import ml.docilealligator.infinityforreddit.apis.RedditAPI;
 import ml.docilealligator.infinityforreddit.asynctasks.AccountManagement;
 import ml.docilealligator.infinityforreddit.customtheme.CustomThemeWrapper;
-import ml.docilealligator.infinityforreddit.customviews.slidr.Slidr;
 import ml.docilealligator.infinityforreddit.databinding.ActivityInboxBinding;
 import ml.docilealligator.infinityforreddit.events.ChangeInboxCountEvent;
 import ml.docilealligator.infinityforreddit.events.PassPrivateMessageEvent;
@@ -56,7 +56,6 @@ import ml.docilealligator.infinityforreddit.message.FetchMessage;
 import ml.docilealligator.infinityforreddit.message.Message;
 import ml.docilealligator.infinityforreddit.thing.SelectThingReturnKey;
 import ml.docilealligator.infinityforreddit.utils.APIUtils;
-import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
 import ml.docilealligator.infinityforreddit.utils.Utils;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -104,9 +103,7 @@ public class InboxActivity extends BaseActivity implements ActivityToolbarInterf
 
         applyCustomTheme();
 
-        if (mSharedPreferences.getBoolean(SharedPreferencesUtils.SWIPE_RIGHT_TO_GO_BACK, true)) {
-            mSliderPanel = Slidr.attach(this);
-        }
+        attachSliderPanelIfApplicable();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = getWindow();
@@ -115,21 +112,19 @@ public class InboxActivity extends BaseActivity implements ActivityToolbarInterf
                 addOnOffsetChangedListener(binding.appbarLayoutInboxActivity);
             }
 
-            if (isImmersiveInterface()) {
+            if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     window.setDecorFitsSystemWindows(false);
                 } else {
                     window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
                 }
 
+                ViewGroupCompat.installCompatInsetsDispatch(binding.getRoot());
                 ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), new OnApplyWindowInsetsListener() {
                     @NonNull
                     @Override
                     public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                        Insets allInsets = insets.getInsets(
-                                WindowInsetsCompat.Type.systemBars()
-                                        | WindowInsetsCompat.Type.displayCutout()
-                        );
+                        Insets allInsets = Utils.getInsets(insets, false, isForcedImmersiveInterface());
 
                         setMargins(binding.toolbarInboxActivity,
                                 allInsets.left,
@@ -141,7 +136,7 @@ public class InboxActivity extends BaseActivity implements ActivityToolbarInterf
                                 allInsets.left,
                                 0,
                                 allInsets.right,
-                                allInsets.bottom);
+                                0);
 
                         setMargins(binding.fabInboxActivity,
                                 BaseActivity.IGNORE_MARGIN,
@@ -155,7 +150,7 @@ public class InboxActivity extends BaseActivity implements ActivityToolbarInterf
                                 allInsets.right,
                                 BaseActivity.IGNORE_MARGIN);
 
-                        return WindowInsetsCompat.CONSUMED;
+                        return insets;
                     }
                 });
 
@@ -252,6 +247,7 @@ public class InboxActivity extends BaseActivity implements ActivityToolbarInterf
         binding.getRoot().setBackgroundColor(mCustomThemeWrapper.getBackgroundColor());
         applyAppBarLayoutAndCollapsingToolbarLayoutAndToolbarTheme(binding.appbarLayoutInboxActivity,
                 binding.collapsingToolbarLayoutInboxActivity, binding.toolbarInboxActivity);
+        applyAppBarScrollFlagsIfApplicable(binding.collapsingToolbarLayoutInboxActivity);
         applyTabLayoutTheme(binding.tabLayoutInboxActivity);
         applyFABTheme(binding.fabInboxActivity);
     }

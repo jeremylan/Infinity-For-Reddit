@@ -46,6 +46,7 @@ import ml.docilealligator.infinityforreddit.subreddit.SubredditListingViewModel;
 import ml.docilealligator.infinityforreddit.thing.SelectThingReturnKey;
 import ml.docilealligator.infinityforreddit.thing.SortType;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
+import ml.docilealligator.infinityforreddit.utils.Utils;
 import retrofit2.Retrofit;
 
 
@@ -101,19 +102,16 @@ public class SubredditListingFragment extends Fragment implements FragmentCommun
 
         applyTheme();
 
-        if (mActivity.isImmersiveInterface()) {
-            ViewCompat.setOnApplyWindowInsetsListener(mActivity.getWindow().getDecorView(), new OnApplyWindowInsetsListener() {
+        if (mActivity.isImmersiveInterfaceRespectForcedEdgeToEdge()) {
+            ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), new OnApplyWindowInsetsListener() {
                 @NonNull
                 @Override
                 public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                    Insets allInsets = insets.getInsets(
-                            WindowInsetsCompat.Type.systemBars()
-                                    | WindowInsetsCompat.Type.displayCutout()
-                    );
+                    Insets allInsets = Utils.getInsets(insets, false, mActivity.isForcedImmersiveInterface());
                     binding.recyclerViewSubredditListingFragment.setPadding(
                             0, 0, 0, allInsets.bottom
                     );
-                    return insets;
+                    return WindowInsetsCompat.CONSUMED;
                 }
             });
             //binding.recyclerViewSubredditListingFragment.setPadding(0, 0, 0, mActivity.getNavBarHeight());
@@ -176,7 +174,7 @@ public class SubredditListingFragment extends Fragment implements FragmentCommun
         }
 
         SubredditListingViewModel.Factory factory = new SubredditListingViewModel.Factory(mExecutor,
-                new Handler(), mOauthRetrofit, query, sortType, mActivity.accessToken, mActivity.accountName, nsfw);
+                new Handler(), mRetrofit, mOauthRetrofit, query, sortType, mActivity.accessToken, mActivity.accountName, nsfw);
         mSubredditListingViewModel = new ViewModelProvider(this, factory).get(SubredditListingViewModel.class);
         mSubredditListingViewModel.getSubreddits().observe(getViewLifecycleOwner(), subredditData -> mAdapter.submitList(subredditData));
 
@@ -259,17 +257,17 @@ public class SubredditListingFragment extends Fragment implements FragmentCommun
         return sortType;
     }
 
-    public ArrayList<String> getSelectedSubredditNames() {
+    public ArrayList<SubredditData> getSelectedSubredditNames() {
         if (mSubredditListingViewModel != null) {
             List<SubredditData> allSubreddits = mSubredditListingViewModel.getSubreddits().getValue();
             if (allSubreddits == null) {
                 return null;
             }
 
-            ArrayList<String> selectedSubreddits = new ArrayList<>();
+            ArrayList<SubredditData> selectedSubreddits = new ArrayList<>();
             for (SubredditData s : allSubreddits) {
                 if (s.isSelected()) {
-                    selectedSubreddits.add(s.getName());
+                    selectedSubreddits.add(s);
                 }
             }
             return selectedSubreddits;

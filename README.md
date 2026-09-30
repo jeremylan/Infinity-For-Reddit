@@ -13,17 +13,15 @@ A Reddit client on Android written in Java. It does not have any ads and it feat
 
 <br>
 
+<div>
+
+Infinity for Reddit+ is available on Google Play and GitHub. There’s also a Patreon version that works without Google Play Services. You can find it on the <a href="https://github.com/Docile-Alligator/Infinity-For-Reddit/releases">GitHub releases page</a>. Just look for the APK file that contains <strong><i>Infinity-Patreon</i></strong> in its name.
+
 <div align="center">
-
-Infinity for Reddit+ is available on Google Play and F-Droid
-
   <a href="https://play.google.com/store/apps/details?id=ml.docilealligator.infinityforreddit.plus">
       <img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
-      </a>  
-      <a href="https://apt.izzysoft.de/fdroid/index/apk/ml.docilealligator.infinityforreddit.patreon">
-          <img alt="Get it on F-Droid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" />
   </a>
-
+</div>
 </div>
 
 <div align="center">
@@ -50,10 +48,17 @@ Infinity for Reddit+ is available on Google Play and F-Droid
 
 </div>
 
+### 📱 Also available on iOS
+Infinity for Reddit is finally on iOS! Check it out here: [Infinity for Reddit](https://github.com/foxanastudio/Infinity-For-Reddit-iOS)
+
+<a href="https://apps.apple.com/us/app/infinity-for-reddit/id6759064642">
+  <img alt="Download on the App Store" height="80" src="fastlane/metadata/android/en-US/images/app_store_badge.svg" />
+</a>
+
 ## Donation
-<p>Infinity for Reddit+:</p>
-<a href="https://play.google.com/store/apps/details?id=ml.docilealligator.infinityforreddit.plus">
-    <img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
+<p>Infinity for Reddit++:</p>
+<a href="https://play.google.com/store/apps/details?id=ml.docilealligator.infinityforreddit.plus2">
+    <img alt="Get it on Google Play" height="100" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" />
 </a> 
 
 Patreon: https://www.patreon.com/docile_alligator

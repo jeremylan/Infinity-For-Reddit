@@ -45,6 +45,7 @@ import ml.docilealligator.infinityforreddit.events.ToggleSecureModeEvent;
 import ml.docilealligator.infinityforreddit.font.ContentFontFamily;
 import ml.docilealligator.infinityforreddit.font.FontFamily;
 import ml.docilealligator.infinityforreddit.font.TitleFontFamily;
+import ml.docilealligator.infinityforreddit.reminder.ReminderManager;
 import ml.docilealligator.infinityforreddit.utils.MaterialYouUtils;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
 import ml.docilealligator.infinityforreddit.utils.Utils;
@@ -59,6 +60,8 @@ public class Infinity extends Application implements LifecycleObserver {
     private long appLockTimeout;
     private boolean canStartLockScreenActivity = false;
     private boolean isSecureMode;
+    @Inject
+    public RedditDataRoomDatabase mRedditDataRoomDatabase;
     @Inject
     @Named("default")
     SharedPreferences mSharedPreferences;
@@ -83,6 +86,8 @@ public class Infinity extends Application implements LifecycleObserver {
     CustomThemeWrapper customThemeWrapper;
     @Inject
     Executor executor;
+    @Inject
+    ReminderManager reminderManager;
 
     @Override
     public void onCreate() {
@@ -218,6 +223,8 @@ public class Infinity extends Application implements LifecycleObserver {
                         amoledThemeSharedPreferences, mInternalSharedPreferences, null);
             }
         }
+
+        reminderManager.checkAndSetAllAlarms();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)

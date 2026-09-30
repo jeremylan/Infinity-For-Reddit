@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -34,13 +34,30 @@
             android:textSize="?attr/font_default"
             android:fontFamily="?attr/font_family" />
 
+        <TextView
+            android:id="@+id/remove_flair_text_view_flair_bottom_sheet_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="@string/remove_flair"
+            android:textColor="?attr/colorAccent"
+            android:textSize="?attr/font_default"
+            android:fontFamily="?attr/font_family"
+            android:visibility="gone"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_bottom_sheet_fragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             app:layoutManager="ml.docilealligator.infinityforreddit.customviews.LinearLayoutManagerBugFixed"
             android:nestedScrollingEnabled="false" />
 
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

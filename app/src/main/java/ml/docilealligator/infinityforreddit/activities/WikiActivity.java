@@ -43,15 +43,14 @@ import ml.docilealligator.infinityforreddit.customtheme.CustomThemeWrapper;
 import ml.docilealligator.infinityforreddit.customviews.LinearLayoutManagerBugFixed;
 import ml.docilealligator.infinityforreddit.customviews.SwipeLockInterface;
 import ml.docilealligator.infinityforreddit.customviews.SwipeLockLinearLayoutManager;
-import ml.docilealligator.infinityforreddit.customviews.slidr.Slidr;
 import ml.docilealligator.infinityforreddit.databinding.ActivityWikiBinding;
 import ml.docilealligator.infinityforreddit.events.ChangeNetworkStatusEvent;
 import ml.docilealligator.infinityforreddit.events.SwitchAccountEvent;
-import ml.docilealligator.infinityforreddit.markdown.EmoteCloseBracketInlineProcessor;
-import ml.docilealligator.infinityforreddit.markdown.EmotePlugin;
+import ml.docilealligator.infinityforreddit.markdown.emote.EmoteCloseBracketInlineProcessor;
+import ml.docilealligator.infinityforreddit.markdown.emote.EmotePlugin;
 import ml.docilealligator.infinityforreddit.markdown.EvenBetterLinkMovementMethod;
-import ml.docilealligator.infinityforreddit.markdown.ImageAndGifEntry;
-import ml.docilealligator.infinityforreddit.markdown.ImageAndGifPlugin;
+import ml.docilealligator.infinityforreddit.markdown.imageandgif.ImageAndGifEntry;
+import ml.docilealligator.infinityforreddit.markdown.imageandgif.ImageAndGifPlugin;
 import ml.docilealligator.infinityforreddit.markdown.MarkdownUtils;
 import ml.docilealligator.infinityforreddit.utils.JSONUtils;
 import ml.docilealligator.infinityforreddit.utils.SharedPreferencesUtils;
@@ -106,9 +105,7 @@ public class WikiActivity extends BaseActivity {
         setSupportActionBar(binding.toolbarCommentWikiActivity);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (mSharedPreferences.getBoolean(SharedPreferencesUtils.SWIPE_RIGHT_TO_GO_BACK, true)) {
-            mSliderPanel = Slidr.attach(this);
-        }
+        attachSliderPanelIfApplicable();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = getWindow();
@@ -117,7 +114,7 @@ public class WikiActivity extends BaseActivity {
                 addOnOffsetChangedListener(binding.appbarLayoutCommentWikiActivity);
             }
 
-            if (isImmersiveInterface()) {
+            if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                     window.setDecorFitsSystemWindows(false);
                 } else {
@@ -128,10 +125,7 @@ public class WikiActivity extends BaseActivity {
                     @NonNull
                     @Override
                     public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                        Insets allInsets = insets.getInsets(
-                                WindowInsetsCompat.Type.systemBars()
-                                        | WindowInsetsCompat.Type.displayCutout()
-                        );
+                        Insets allInsets = Utils.getInsets(insets, false, isForcedImmersiveInterface());
 
                         setMargins(binding.toolbarCommentWikiActivity,
                                 allInsets.left,
@@ -347,6 +341,7 @@ public class WikiActivity extends BaseActivity {
         binding.getRoot().setBackgroundColor(mCustomThemeWrapper.getBackgroundColor());
         applyAppBarLayoutAndCollapsingToolbarLayoutAndToolbarTheme(binding.appbarLayoutCommentWikiActivity,
                 binding.collapsingToolbarLayoutWikiActivity, binding.toolbarCommentWikiActivity);
+        applyAppBarScrollFlagsIfApplicable(binding.collapsingToolbarLayoutWikiActivity);
         binding.swipeRefreshLayoutWikiActivity.setProgressBackgroundColorSchemeColor(mCustomThemeWrapper.getCircularProgressBarBackground());
         binding.swipeRefreshLayoutWikiActivity.setColorSchemeColors(mCustomThemeWrapper.getColorAccent());
         binding.fetchWikiTextViewWikiActivity.setTextColor(mCustomThemeWrapper.getSecondaryTextColor());

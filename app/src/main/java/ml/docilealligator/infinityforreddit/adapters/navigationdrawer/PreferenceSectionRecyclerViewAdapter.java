@@ -83,7 +83,6 @@ public class PreferenceSectionRecyclerViewAdapter extends RecyclerView.Adapter<R
         } else if (holder instanceof MenuItemViewHolder) {
             int stringId = 0;
             int drawableId = 0;
-            boolean setOnClickListener = true;
 
             switch (position) {
                 case 1:
@@ -103,10 +102,8 @@ public class PreferenceSectionRecyclerViewAdapter extends RecyclerView.Adapter<R
             if (stringId != 0) {
                 ((MenuItemViewHolder) holder).binding.textViewItemNavDrawerMenuItem.setText(stringId);
                 ((MenuItemViewHolder) holder).binding.imageViewItemNavDrawerMenuItem.setImageDrawable(ContextCompat.getDrawable(baseActivity, drawableId));
-                if (setOnClickListener) {
-                    int finalStringId = stringId;
-                    holder.itemView.setOnClickListener(view -> itemClickListener.onMenuClick(finalStringId));
-                }
+                int finalStringId = stringId;
+                holder.itemView.setOnClickListener(view -> itemClickListener.onMenuClick(finalStringId));
             }
         }
     }

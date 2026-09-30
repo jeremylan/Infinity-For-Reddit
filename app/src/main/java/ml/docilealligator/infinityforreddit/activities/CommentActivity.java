@@ -74,10 +74,10 @@ import ml.docilealligator.infinityforreddit.databinding.ActivityCommentBinding;
 import ml.docilealligator.infinityforreddit.events.ChangeNetworkStatusEvent;
 import ml.docilealligator.infinityforreddit.events.SwitchAccountEvent;
 import ml.docilealligator.infinityforreddit.markdown.CustomMarkwonAdapter;
-import ml.docilealligator.infinityforreddit.markdown.EmoteCloseBracketInlineProcessor;
-import ml.docilealligator.infinityforreddit.markdown.EmotePlugin;
-import ml.docilealligator.infinityforreddit.markdown.ImageAndGifEntry;
-import ml.docilealligator.infinityforreddit.markdown.ImageAndGifPlugin;
+import ml.docilealligator.infinityforreddit.markdown.emote.EmoteCloseBracketInlineProcessor;
+import ml.docilealligator.infinityforreddit.markdown.emote.EmotePlugin;
+import ml.docilealligator.infinityforreddit.markdown.imageandgif.ImageAndGifEntry;
+import ml.docilealligator.infinityforreddit.markdown.imageandgif.ImageAndGifPlugin;
 import ml.docilealligator.infinityforreddit.markdown.MarkdownUtils;
 import ml.docilealligator.infinityforreddit.network.AnyAccountAccessTokenAuthenticator;
 import ml.docilealligator.infinityforreddit.repositories.CommentActivityRepository;
@@ -178,16 +178,12 @@ public class CommentActivity extends BaseActivity implements UploadImageEnabledA
                 addOnOffsetChangedListener(binding.commentAppbarLayout);
             }
 
-            if (isImmersiveInterface()) {
+            if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
                 ViewCompat.setOnApplyWindowInsetsListener(binding.getRoot(), new OnApplyWindowInsetsListener() {
                     @NonNull
                     @Override
                     public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                        Insets allInsets = insets.getInsets(
-                                WindowInsetsCompat.Type.systemBars()
-                                        | WindowInsetsCompat.Type.displayCutout()
-                                        | WindowInsetsCompat.Type.ime()
-                        );
+                        Insets allInsets = Utils.getInsets(insets, true, isForcedImmersiveInterface());
 
                         setMargins(binding.commentToolbar,
                                 allInsets.left,
@@ -607,10 +603,12 @@ public class CommentActivity extends BaseActivity implements UploadImageEnabledA
                     return;
                 }
                 Utils.uploadImageToReddit(this, mExecutor, mOauthRetrofit, mUploadMediaRetrofit,
-                        accessToken, binding.commentCommentEditText, binding.commentCoordinatorLayout, data.getData(), uploadedImages);
+                        accessToken, binding.commentCommentEditText,
+                        binding.commentCoordinatorLayout, data.getData(), uploadedImages);
             } else if (requestCode == CAPTURE_IMAGE_REQUEST_CODE) {
                 Utils.uploadImageToReddit(this, mExecutor, mOauthRetrofit, mUploadMediaRetrofit,
-                        accessToken, binding.commentCommentEditText, binding.commentCoordinatorLayout, capturedImageUri, uploadedImages);
+                        accessToken, binding.commentCommentEditText,
+                        binding.commentCoordinatorLayout, capturedImageUri, uploadedImages);
             } else if (requestCode == MARKDOWN_PREVIEW_REQUEST_CODE) {
                 sendComment(mMenu == null ? null : mMenu.findItem(R.id.action_send_comment_activity));
             }

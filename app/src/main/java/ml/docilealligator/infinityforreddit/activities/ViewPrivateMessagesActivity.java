@@ -42,6 +42,7 @@ import ml.docilealligator.infinityforreddit.events.RepliedToPrivateMessageEvent;
 import ml.docilealligator.infinityforreddit.message.Message;
 import ml.docilealligator.infinityforreddit.message.ReadMessage;
 import ml.docilealligator.infinityforreddit.message.ReplyMessage;
+import ml.docilealligator.infinityforreddit.utils.Utils;
 import retrofit2.Retrofit;
 
 public class ViewPrivateMessagesActivity extends BaseActivity implements ActivityToolbarInterface {
@@ -99,7 +100,7 @@ public class ViewPrivateMessagesActivity extends BaseActivity implements Activit
 
         applyCustomTheme();
 
-        if (isImmersiveInterface()) {
+        if (isImmersiveInterfaceRespectForcedEdgeToEdge()) {
             if (isChangeStatusBarIconColor()) {
                 addOnOffsetChangedListener(binding.appbarLayoutViewPrivateMessagesActivity);
             }
@@ -108,11 +109,7 @@ public class ViewPrivateMessagesActivity extends BaseActivity implements Activit
                 @NonNull
                 @Override
                 public WindowInsetsCompat onApplyWindowInsets(@NonNull View v, @NonNull WindowInsetsCompat insets) {
-                    Insets allInsets = insets.getInsets(
-                            WindowInsetsCompat.Type.systemBars()
-                                    | WindowInsetsCompat.Type.displayCutout()
-                                    | WindowInsetsCompat.Type.ime()
-                    );
+                    Insets allInsets = Utils.getInsets(insets, true, isForcedImmersiveInterface());
 
                     setMargins(binding.toolbarViewPrivateMessagesActivity,
                             allInsets.left,
@@ -126,7 +123,7 @@ public class ViewPrivateMessagesActivity extends BaseActivity implements Activit
                             allInsets.right,
                             allInsets.bottom);
 
-                    return WindowInsetsCompat.CONSUMED;
+                    return insets;
                 }
             });
         }
@@ -149,27 +146,40 @@ public class ViewPrivateMessagesActivity extends BaseActivity implements Activit
     }
 
     private void bindView() {
+        setTitle(privateMessage.getRecipient(accountName));
         if (privateMessage != null) {
             if (privateMessage.getAuthor().equals(accountName)) {
-                setTitle(privateMessage.getDestination());
                 binding.toolbarViewPrivateMessagesActivity.setOnClickListener(view -> {
                     if (privateMessage.isDestinationDeleted()) {
                         return;
                     }
-                    Intent intent = new Intent(this, ViewUserDetailActivity.class);
-                    intent.putExtra(ViewUserDetailActivity.EXTRA_USER_NAME_KEY, privateMessage.getDestination());
-                    startActivity(intent);
+                    if (privateMessage.getDestination().startsWith("#")) {
+                        Intent intent = new Intent(this, ViewSubredditDetailActivity.class);
+                        intent.putExtra(ViewSubredditDetailActivity.EXTRA_SUBREDDIT_NAME_KEY, privateMessage.getSubredditName());
+                        startActivity(intent);
+                    } else {
+                        Intent intent = new Intent(this, ViewUserDetailActivity.class);
+                        intent.putExtra(ViewUserDetailActivity.EXTRA_USER_NAME_KEY, privateMessage.getDestination());
+                        startActivity(intent);
+                    }
                 });
             } else {
-                setTitle(privateMessage.getAuthor());
-                binding.toolbarViewPrivateMessagesActivity.setOnClickListener(view -> {
-                    if (privateMessage.isAuthorDeleted()) {
-                        return;
-                    }
-                    Intent intent = new Intent(this, ViewUserDetailActivity.class);
-                    intent.putExtra(ViewUserDetailActivity.EXTRA_USER_NAME_KEY, privateMessage.getAuthor());
-                    startActivity(intent);
-                });
+                if (privateMessage.getAuthor().equals("null")) {
+                    binding.toolbarViewPrivateMessagesActivity.setOnClickListener(view -> {
+                        Intent intent = new Intent(this, ViewSubredditDetailActivity.class);
+                        intent.putExtra(ViewSubredditDetailActivity.EXTRA_SUBREDDIT_NAME_KEY, privateMessage.getSubredditName());
+                        startActivity(intent);
+                    });
+                } else {
+                    binding.toolbarViewPrivateMessagesActivity.setOnClickListener(view -> {
+                        if (privateMessage.isAuthorDeleted()) {
+                            return;
+                        }
+                        Intent intent = new Intent(this, ViewUserDetailActivity.class);
+                        intent.putExtra(ViewUserDetailActivity.EXTRA_USER_NAME_KEY, privateMessage.getAuthor());
+                        startActivity(intent);
+                    });
+                }
             }
         }
         mAdapter = new PrivateMessagesDetailRecyclerViewAdapter(this, mSharedPreferences,
@@ -249,14 +259,14 @@ public class ViewPrivateMessagesActivity extends BaseActivity implements Activit
             mProvideUserAvatarCallbacks.add(provideUserAvatarCallback);
             if (!isLoadingUserAvatar) {
                 LoadUserData.loadUserData(mExecutor, new Handler(), mRedditDataRoomDatabase,
-                        username, mRetrofit, iconImageUrl -> {
-                    isLoadingUserAvatar = false;
-                    mUserAvatar = iconImageUrl == null ? "" : iconImageUrl;
-                    for (ProvideUserAvatarCallback provideUserAvatarCallbackInArrayList : mProvideUserAvatarCallbacks) {
-                        provideUserAvatarCallbackInArrayList.fetchAvatarSuccess(iconImageUrl);
-                    }
-                    mProvideUserAvatarCallbacks.clear();
-                });
+                        accessToken, username, mOauthRetrofit, mRetrofit, iconImageUrl -> {
+                            isLoadingUserAvatar = false;
+                            mUserAvatar = iconImageUrl == null ? "" : iconImageUrl;
+                            for (ProvideUserAvatarCallback provideUserAvatarCallbackInArrayList : mProvideUserAvatarCallbacks) {
+                                provideUserAvatarCallbackInArrayList.fetchAvatarSuccess(iconImageUrl);
+                            }
+                            mProvideUserAvatarCallbacks.clear();
+                        });
             }
         } else {
             provideUserAvatarCallback.fetchAvatarSuccess(mUserAvatar);
